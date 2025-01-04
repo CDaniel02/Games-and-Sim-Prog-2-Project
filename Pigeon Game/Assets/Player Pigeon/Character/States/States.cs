@@ -18,7 +18,7 @@ public abstract class PlayerBaseState : State
         this.stateMachine = stateMachine;
     }
 
-    protected UnityEngine.Vector2 CalculateMoveDirection()
+    protected UnityEngine.Vector3 CalculateMoveDirection()
     {
         Vector3 cameraForward = new(stateMachine.MainCamera.forward.x, 0, stateMachine.MainCamera.forward.z);
         Vector3 cameraRight = new(stateMachine.MainCamera.right.x, 0, stateMachine.MainCamera.right.z);
@@ -43,10 +43,7 @@ public abstract class PlayerBaseState : State
 
     protected void ApplyGravity()
     {
-        if (stateMachine.Velocity.y > Physics.gravity.y)
-        {
-        }
-            stateMachine.Velocity.y += Physics.gravity.y * Time.deltaTime;
+        stateMachine.Velocity.y += Physics.gravity.y * Time.deltaTime;
     }
 
     protected void Move()
@@ -73,9 +70,8 @@ public class PlayerGroundedState : PlayerBaseState
             stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
         }
 
-        UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
-        // if playermovent is > 0, we play hop, otherwise, we play idle
-        stateMachine.Animator.SetFloat("GroundMovementSpeed", Mathf.Abs(playerMovement.x) + Math.Abs(playerMovement.y)); 
+        UnityEngine.Vector3 playerMovement = CalculateMoveDirection();
+        stateMachine.Animator.SetFloat("GroundMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
         FaceMoveDirection();
         Move();
 
@@ -120,8 +116,8 @@ public class PlayerAirborneState : PlayerBaseState
     {
         ApplyGravity(); 
 
-        UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
-        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(playerMovement.x) + Math.Abs(playerMovement.y)); 
+        UnityEngine.Vector3 playerMovement = CalculateMoveDirection();
+        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
         FaceMoveDirection();
         Move();
 
