@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class NPCInteract : MonoBehaviour
 {
+    public DialogBox dialogBox;
     public void Interact()
     {
-        Debug.Log("Interact!");
+        if (dialogBox.isActiveAndEnabled)
+        {
+            dialogBox.dialogPanel.SetActive(false);
+        }
+        else
+        {
+            dialogBox.ShowDialog("This is your first interaction");
+        }
+        
     }
 }
