@@ -7,7 +7,7 @@ public class NPCInteract : MonoBehaviour
     public DialogBox dialogBox;
     public void Interact()
     {
-        if (dialogBox.isActiveAndEnabled)
+        if (dialogBox.dialogPanel.activeInHierarchy)
         {
             dialogBox.dialogPanel.SetActive(false);
         }
