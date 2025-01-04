@@ -75,6 +75,7 @@ public class PlayerGroundedState : PlayerBaseState
 
         UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
         // if playermovent is > 0, we play hop, otherwise, we play idle
+        stateMachine.Animator.SetFloat("GroundMovementSpeed", Mathf.Abs(playerMovement.x) + Math.Abs(playerMovement.y)); 
         FaceMoveDirection();
         Move();
 
@@ -89,6 +90,7 @@ public class PlayerGroundedState : PlayerBaseState
 
     private void SwitchToAirborneState()
     {
+        stateMachine.Animator.SetTrigger("Jumped"); 
         stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
     }
 }
@@ -96,7 +98,7 @@ public class PlayerGroundedState : PlayerBaseState
 public class PlayerAirborneState : PlayerBaseState
 {
     private bool _canFlap;
-    private float _flapCoolDown = 1.2f; 
+    private float _flapCoolDown = 0.95f; 
 
     public PlayerAirborneState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -119,11 +121,14 @@ public class PlayerAirborneState : PlayerBaseState
         ApplyGravity(); 
 
         UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
+        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(playerMovement.x) + Math.Abs(playerMovement.y)); 
         FaceMoveDirection();
         Move();
 
         if (stateMachine.Controller.isGrounded)
         {
+            stateMachine.Animator.SetTrigger("Landed");
+            Debug.Log("Player landed"); 
             stateMachine.SwitchState(new PlayerGroundedState(stateMachine));
         }
 
@@ -143,6 +148,7 @@ public class PlayerAirborneState : PlayerBaseState
     {
         if(_canFlap)
         {
+            stateMachine.Animator.SetTrigger("Jumped");
             Debug.Log("Flapping wings");
             // increase y velocity
             stateMachine.Velocity.y += stateMachine.FlapForce;
