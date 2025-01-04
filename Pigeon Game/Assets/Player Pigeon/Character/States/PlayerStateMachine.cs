@@ -7,9 +7,12 @@ using System.Collections;
 public class PlayerStateMachine : StateMachine
 {
     public Vector3 Velocity;
-    public float MovementSpeed { get; private set; } = 50f;
-    public float FlapForce { get; private set; } = 50f;
-    public float LookRotationDampFactor { get; private set; } = 100f;
+    [SerializeField]
+    public float MovementSpeed { get; private set; } = 20f;
+    [SerializeField]
+    public float FlapForce { get; private set; } = 20f;
+    [SerializeField]
+    public float LookRotationDampFactor { get; private set; } = 10;
     public Transform MainCamera { get; private set; }
     public InputReader InputReader { get; private set; }
     public Animator Animator { get; private set; }

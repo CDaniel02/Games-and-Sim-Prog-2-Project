@@ -45,8 +45,8 @@ public abstract class PlayerBaseState : State
     {
         if (stateMachine.Velocity.y > Physics.gravity.y)
         {
-            stateMachine.Velocity.y += Physics.gravity.y * Time.deltaTime;
         }
+            stateMachine.Velocity.y += Physics.gravity.y * Time.deltaTime;
     }
 
     protected void Move()
@@ -111,20 +111,24 @@ public class PlayerAirborneState : PlayerBaseState
 
         // flap wings upon entering 
         FlapWings(); 
+        _canFlap = true; 
     }
 
     public override void Update()
     {
+        ApplyGravity(); 
+
+        UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
+        FaceMoveDirection();
+        Move();
+
         if (stateMachine.Controller.isGrounded)
         {
             stateMachine.SwitchState(new PlayerGroundedState(stateMachine));
         }
 
-        UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
         // if playermovent is 0, we play idle flapping animation
         // if playermovent is > 0, we play gliding animation
-        FaceMoveDirection();
-        Move();
 
         // stateMachine.Animator.SetFloat(MoveSpeedHash, stateMachine.InputReader.MoveComposite.sqrMagnitude > 0f ? 1f : 0f, AnimationDampTime, Time.deltaTime);
     }
@@ -139,10 +143,13 @@ public class PlayerAirborneState : PlayerBaseState
     {
         if(_canFlap)
         {
-            Debug.Log("Flapping wings"); 
+            Debug.Log("Flapping wings");
             // increase y velocity
-            stateMachine.Velocity = new Vector3(stateMachine.Velocity.x, stateMachine.FlapForce, stateMachine.Velocity.z);
+            stateMachine.Velocity.y += stateMachine.FlapForce;
+            // new Vector3(stateMachine.Velocity.x, stateMachine.FlapForce, stateMachine.Velocity.z);
             // if moving forward, play one flap animation
+
+            _canFlap = false; 
 
             IEnumerator validateFlapCoroutine = ValidateFlap(); 
             stateMachine.StartCoroutine(validateFlapCoroutine); 
@@ -152,6 +159,7 @@ public class PlayerAirborneState : PlayerBaseState
 
     private IEnumerator ValidateFlap()
     {
-        yield return new WaitForSeconds(_flapCoolDown); 
+        yield return new WaitForSeconds(_flapCoolDown);
+        _canFlap = true; 
     }
 }
