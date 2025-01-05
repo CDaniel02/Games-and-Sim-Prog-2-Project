@@ -32,7 +32,6 @@ public class PlayerStateMachine : StateMachine
         playerInput = GetComponent<PlayerInput>(); 
         MainCamera = Camera.main.transform;
         InputReader = GetComponent<InputReader>();
-        dialogBox = GetComponent<DialogBox>(); 
         Animator = GetComponent<Animator>();
         Controller = GetComponent<CharacterController>();
 
