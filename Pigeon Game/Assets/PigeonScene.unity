@@ -184,7 +184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4520716785383396158, guid: 03fb6f49d936d5e429b639fccb1f29a6, type: 3}
       propertyPath: m_Name
-      value: KingAssisstant
+      value: The King's Assisstant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -645,11 +645,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7677769501214319312, guid: 2368a3ab671c82d4d9988076ce5dd450, type: 3}
       propertyPath: m_Name
-      value: King
+      value: The King
       objectReference: {fileID: 0}
     - target: {fileID: 8799543930531822630, guid: 2368a3ab671c82d4d9988076ce5dd450, type: 3}
       propertyPath: Name
-      value: King
+      value: The King
       objectReference: {fileID: 0}
     - target: {fileID: 8799543930531822630, guid: 2368a3ab671c82d4d9988076ce5dd450, type: 3}
       propertyPath: dialogBox

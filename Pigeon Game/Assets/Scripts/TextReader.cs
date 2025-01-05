@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Internal;
 
 public class JSONReader : MonoBehaviour
 {
@@ -16,7 +15,7 @@ public class JSONReader : MonoBehaviour
 
     private void Read()
     {
-        if (File.Exists(file))
+        if (File.Exists(_filepath))
         {
             // Store each line in array of strings 
             string[] lines = File.ReadAllLines(_filepath);

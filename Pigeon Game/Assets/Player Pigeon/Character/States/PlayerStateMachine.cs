@@ -35,6 +35,8 @@ public class PlayerStateMachine : StateMachine
         Animator = GetComponent<Animator>();
         Controller = GetComponent<CharacterController>();
 
+        Letters = new Dictionary<string, Letter>(); 
+
         SwitchState(new PlayerAirborneState(this));
     }
 
