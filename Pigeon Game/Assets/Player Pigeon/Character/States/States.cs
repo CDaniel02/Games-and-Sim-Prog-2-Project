@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public abstract class State
 {
@@ -16,9 +17,11 @@ public abstract class PlayerBaseState : State
     protected PlayerBaseState(PlayerStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
+
+        stateMachine.InputReader.OnInteractPerformed = Interact; 
     }
 
-    protected UnityEngine.Vector2 CalculateMoveDirection()
+    protected UnityEngine.Vector3 CalculateMoveDirection()
     {
         Vector3 cameraForward = new(stateMachine.MainCamera.forward.x, 0, stateMachine.MainCamera.forward.z);
         Vector3 cameraRight = new(stateMachine.MainCamera.right.x, 0, stateMachine.MainCamera.right.z);
@@ -43,15 +46,33 @@ public abstract class PlayerBaseState : State
 
     protected void ApplyGravity()
     {
-        if (stateMachine.Velocity.y > Physics.gravity.y)
-        {
-        }
-            stateMachine.Velocity.y += Physics.gravity.y * Time.deltaTime;
+        stateMachine.Velocity.y += Physics.gravity.y * Time.deltaTime;
     }
 
     protected void Move()
     {
         stateMachine.Controller.Move(stateMachine.Velocity * Time.deltaTime);
+    }
+
+    protected void Interact()
+    {
+        Collider[] colliderArray = Physics.OverlapSphere(stateMachine.gameObject.transform.position, stateMachine.interactRange);
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out NPC npc))
+            {
+                bool active = npc.Interact(stateMachine);
+                if (active)
+                {
+                    stateMachine.SwitchActionMap("Dialog");
+                    // TODO: freeze bird when talking bc it would be cool (and prevent soltlocking) 
+                }
+                else
+                {
+                    stateMachine.SwitchActionMap("Player");
+                }
+            }
+        }
     }
 }
 
@@ -73,8 +94,8 @@ public class PlayerGroundedState : PlayerBaseState
             stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
         }
 
-        UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
-        // if playermovent is > 0, we play hop, otherwise, we play idle
+        UnityEngine.Vector3 playerMovement = CalculateMoveDirection();
+        stateMachine.Animator.SetFloat("GroundMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
         FaceMoveDirection();
         Move();
 
@@ -89,6 +110,7 @@ public class PlayerGroundedState : PlayerBaseState
 
     private void SwitchToAirborneState()
     {
+        stateMachine.Animator.SetTrigger("Jumped"); 
         stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
     }
 }
@@ -96,7 +118,7 @@ public class PlayerGroundedState : PlayerBaseState
 public class PlayerAirborneState : PlayerBaseState
 {
     private bool _canFlap;
-    private float _flapCoolDown = 1.2f; 
+    private float _flapCoolDown = 0.95f; 
 
     public PlayerAirborneState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -118,12 +140,15 @@ public class PlayerAirborneState : PlayerBaseState
     {
         ApplyGravity(); 
 
-        UnityEngine.Vector2 playerMovement = CalculateMoveDirection();
+        UnityEngine.Vector3 playerMovement = CalculateMoveDirection();
+        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
         FaceMoveDirection();
         Move();
 
         if (stateMachine.Controller.isGrounded)
         {
+            stateMachine.Animator.SetTrigger("Landed");
+            Debug.Log("Player landed"); 
             stateMachine.SwitchState(new PlayerGroundedState(stateMachine));
         }
 
@@ -143,6 +168,7 @@ public class PlayerAirborneState : PlayerBaseState
     {
         if(_canFlap)
         {
+            stateMachine.Animator.SetTrigger("Jumped");
             Debug.Log("Flapping wings");
             // increase y velocity
             stateMachine.Velocity.y += stateMachine.FlapForce;

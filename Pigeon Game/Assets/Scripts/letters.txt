@@ -1,0 +1,18 @@
+﻿start
+LetterId: 0
+To: Bart
+ToResponse: You must tell him
+From: Matt
+FromResponse: Oh he is wrong
+Body: We are in danger
+end
+
+start
+LetterId: 1
+To: Matt
+ToResponse: Alert him of this immediately
+From: Bart
+FromResponse: Obviously he is a FOOL
+Body: We are not in danger
+PrereqLetters: 0
+end

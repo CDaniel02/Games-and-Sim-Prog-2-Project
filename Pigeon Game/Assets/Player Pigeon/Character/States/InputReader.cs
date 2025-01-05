@@ -11,13 +11,15 @@ public class InputReader : MonoBehaviour // , Controls.IPlayerActions
 
     public Action OnJumpPerformed;
 
+    public Action OnInteractPerformed; 
+
     //private Controls controls;
 
     private void OnEnable()
     {
         MouseDelta = new UnityEngine.Vector2(0, 0);
         MoveComposite = new UnityEngine.Vector2(0, 0);
-        OnJumpPerformedClear(); 
+        OnJumpPerformedClear();
         //MouseDelta
     //    if (controls != null)
     //        return;
@@ -40,6 +42,14 @@ public class InputReader : MonoBehaviour // , Controls.IPlayerActions
     public void OnMove(InputValue inputValue)
     {
         MoveComposite = inputValue.Get<UnityEngine.Vector2>();
+    }
+
+    public void OnInteract(InputValue inputValue)
+    {
+        if (!inputValue.isPressed)
+            return;
+
+        OnInteractPerformed?.Invoke();
     }
 
     public void OnJump(InputValue inputValue)
