@@ -19,7 +19,10 @@ public class NPC : MonoBehaviour
 
     public void Start()
     {
-        Name = GetComponent<CapsuleCollider>().name; 
+        ToMailbox = new Dictionary<string, Letter>();
+        Name = GetComponent<CapsuleCollider>().name;
+        Letter testLetter = new Letter("The King's Assisstant", "The King");
+        ToMailbox[testLetter.To] = testLetter;
     }
 
     public bool Interact(PlayerStateMachine pigeon)
@@ -32,15 +35,38 @@ public class NPC : MonoBehaviour
         }
         else
         {
-            dialogBox.ShowDialog("This is your first interaction");
+            if(ToMailbox.Count > 0)
+            {
 
+                foreach(KeyValuePair<string, Letter> letter in ToMailbox)
+                {
+                    dialogBox.ShowDialog("I have a letter to give you that goes to " + letter.Key + ".");
+                    pigeon.Letters[letter.Key] = letter.Value;
+                    ToMailbox.Remove(letter.Key);
+                }
+                /*foreach(KeyValuePair<string, Letter> letter in pigeon.Letters)
+                {
+                    dialogBox.ShowDialog("coo! I now have the letter that goes to " + letter.Key);
+                }
+                */
+                
+                
+            }
+            else
+            {
+                dialogBox.ShowDialog("I dont have any letters!");
+                foreach(KeyValuePair<string, Letter> letter in pigeon.Letters)
+                {
+                    dialogBox.ShowDialog("coo! I now have the letter that goes to " + letter.Key);
+                }
+            }
             // check if npc has a letter
             // dialogbox letter from
             // give pigeon letter
 
             // dont have a letter, check if the pigeon has a letter that the npc wants
 
-            
+
         }
 
         /*
