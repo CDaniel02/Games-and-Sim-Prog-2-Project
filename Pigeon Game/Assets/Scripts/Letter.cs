@@ -40,11 +40,23 @@ public class Letter
 
 	public bool ValidatePrereqs(Letter letter)
 	{
-		bool result = false; 
+		bool result = false;
 
-		if(PrereqLetters.Contains(letter))
+		Debug.Log(PrereqLetters.Count); 
+		Debug.Log(PrereqLetters.Contains(letter));
+
+		Debug.Log(PrereqLetters[0].To + ", " + PrereqLetters[0].From + ", " + PrereqLetters[0].ToResponse + ", " + PrereqLetters[0].FromResponse + ", " + PrereqLetters[0].Body);
+        Debug.Log(letter.To + ", " + letter.From + ", " + letter.ToResponse + ", " + letter.FromResponse + ", " + letter.Body);
+
+        foreach (Letter prereqLetter in PrereqLetters)
 		{
-			PrereqLetters.Remove(letter); 
+			if(prereqLetter.Equals(letter))
+			{
+				Debug.Log(PrereqLetters.Remove(letter)); 
+                Debug.Log("Letter removed");
+				Debug.Log(PrereqLetters.Count); 
+				Debug.Log(ValidatePrereqs()); 
+            }
 		}
 
 		if(PrereqLetters.Count <= 0)
@@ -60,6 +72,9 @@ public class Letter
 		return PrereqLetters.Count <= 0; 
 	}
 
-
+	public bool Equals(Letter letter)
+	{
+		return (To == letter.To) && (From == letter.From) && (Body == letter.Body) && (ToResponse == letter.ToResponse) && (FromResponse == letter.FromResponse); 
+	}
 }
 
