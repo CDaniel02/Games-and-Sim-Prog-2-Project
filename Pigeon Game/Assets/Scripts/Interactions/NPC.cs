@@ -74,12 +74,14 @@ public class NPC : MonoBehaviour
             if (pigeon.CheckAndGiveLetter(this, out letterToReceive))
             {
                 mailbox.AddIncomingMail(letterToReceive);
+                Debug.Log("Mail added"); 
                 _dialogQueue.Enqueue("Thank you for the letter!");
                 _dialogQueue.Enqueue(letterToReceive.ToResponse);
             }
 
 
             List<Letter> outgoingMail = mailbox.GetOutgoingMail();
+            Debug.Log("Mail checked"); 
             Debug.Log(Name + " outgoing mail count: " + outgoingMail.Count); 
             if (outgoingMail.Count > 0)
             {

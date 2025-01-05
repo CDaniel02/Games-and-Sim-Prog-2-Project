@@ -27,7 +27,6 @@ public class Letter
 	// Designated Contructor 
 	public Letter(string to, string from, string body)
 	{
-
 		To = to;
 		From = from;
 		Body = body;
