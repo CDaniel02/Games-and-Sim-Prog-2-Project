@@ -1455,6 +1455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Velocity: {x: 0, y: 0, z: 0}
   interactRange: 5
+  dialogBox: {fileID: 8672954818134094518}
   playerInput: {fileID: 0}
 --- !u!114 &1610533511
 MonoBehaviour:
