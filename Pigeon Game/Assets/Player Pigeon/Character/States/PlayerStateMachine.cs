@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem; 
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterController))]
@@ -17,9 +18,14 @@ public class PlayerStateMachine : StateMachine
     public InputReader InputReader { get; private set; }
     public Animator Animator { get; private set; }
     public CharacterController Controller { get; private set; }
+    public int interactRange = 5; 
+
+    public PlayerInput playerInput; 
 
     private void Start()
     {
+
+        playerInput = GetComponent<PlayerInput>(); 
 
         MainCamera = Camera.main.transform;
 
@@ -30,5 +36,12 @@ public class PlayerStateMachine : StateMachine
         Controller = GetComponent<CharacterController>();
 
         SwitchState(new PlayerAirborneState(this));
+
+        
+    }
+
+    public void SwitchActionMap(string map)
+    {
+        playerInput.SwitchCurrentActionMap(map); 
     }
 }

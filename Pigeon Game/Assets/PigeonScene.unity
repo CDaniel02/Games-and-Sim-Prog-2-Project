@@ -534,7 +534,7 @@ PrefabInstance:
     - target: {fileID: 8799543930531822630, guid: 2368a3ab671c82d4d9988076ce5dd450, type: 3}
       propertyPath: dialogBox
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8672954818134094518}
     - target: {fileID: 8814401307492936054, guid: 2368a3ab671c82d4d9988076ce5dd450, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.49
@@ -1454,6 +1454,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Velocity: {x: 0, y: 0, z: 0}
+  interactRange: 5
+  playerInput: {fileID: 0}
 --- !u!114 &1610533511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1468,19 +1470,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MouseDelta: {x: 0, y: 0}
   MoveComposite: {x: 0, y: 0}
---- !u!114 &1610533513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1610533499}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce6d0b09c0340ec46869e640af4555df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactRange: 5
 --- !u!1 &1792079761
 GameObject:
   m_ObjectHideFlags: 3
@@ -1954,9 +1943,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100028, guid: 72ee67b36a0bb4747b099d9efe2b3140, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1610533510}
-    - targetCorrespondingSourceObject: {fileID: 100028, guid: 72ee67b36a0bb4747b099d9efe2b3140, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1610533513}
   m_SourcePrefab: {fileID: 100100000, guid: 72ee67b36a0bb4747b099d9efe2b3140, type: 3}
 --- !u!1 &1971409081
 GameObject:

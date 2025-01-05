@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public abstract class State
 {
@@ -16,6 +17,8 @@ public abstract class PlayerBaseState : State
     protected PlayerBaseState(PlayerStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
+
+        stateMachine.InputReader.OnInteractPerformed = Interact; 
     }
 
     protected UnityEngine.Vector3 CalculateMoveDirection()
@@ -49,6 +52,27 @@ public abstract class PlayerBaseState : State
     protected void Move()
     {
         stateMachine.Controller.Move(stateMachine.Velocity * Time.deltaTime);
+    }
+
+    protected void Interact()
+    {
+        Collider[] colliderArray = Physics.OverlapSphere(stateMachine.gameObject.transform.position, stateMachine.interactRange);
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out NPCInteract interaction))
+            {
+                bool active = interaction.Interact();
+                if (active)
+                {
+                    stateMachine.SwitchActionMap("Dialog");
+                    // TODO: freeze bird when talking bc it would be cool (and prevent soltlocking) 
+                }
+                else
+                {
+                    stateMachine.SwitchActionMap("Player");
+                }
+            }
+        }
     }
 }
 
