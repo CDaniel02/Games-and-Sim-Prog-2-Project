@@ -59,9 +59,9 @@ public abstract class PlayerBaseState : State
         Collider[] colliderArray = Physics.OverlapSphere(stateMachine.gameObject.transform.position, stateMachine.interactRange);
         foreach (Collider collider in colliderArray)
         {
-            if (collider.TryGetComponent(out NPCInteract interaction))
+            if (collider.TryGetComponent(out NPC interaction))
             {
-                bool active = interaction.Interact();
+                bool active = interaction.Interact(stateMachine);
                 if (active)
                 {
                     stateMachine.SwitchActionMap("Dialog");
