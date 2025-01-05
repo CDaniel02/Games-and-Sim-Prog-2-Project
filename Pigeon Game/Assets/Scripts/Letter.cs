@@ -52,7 +52,7 @@ public class Letter
 		{
 			if(prereqLetter.Equals(letter))
 			{
-                PrereqLetters.Remove(letter);
+				Debug.Log(PrereqLetters.Remove(letter)); 
                 Debug.Log("Letter removed");
 				Debug.Log(PrereqLetters.Count); 
 				Debug.Log(ValidatePrereqs()); 
