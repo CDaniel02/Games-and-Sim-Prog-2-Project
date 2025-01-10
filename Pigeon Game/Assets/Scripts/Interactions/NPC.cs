@@ -30,19 +30,19 @@ public class NPC : MonoBehaviour
         mailbox = new Mailbox(); 
         Name = GetComponent<CapsuleCollider>().name;
 
-        Letter testLetter = new Letter("The King's Assisstant", "The King");
-        testLetter.FromResponse = "This is the from response";
-        testLetter.ToResponse = "This is the to response";
-        if (Name == "The King")
+        Letter testLetter = new Letter("Naked Man", "Peasant");
+        testLetter.FromResponse = "Bring this to the Naked Man at the lake post-haste"; 
+        testLetter.ToResponse = "How DARE he say this about me?";
+        if (Name == "Peasant")
         {
             mailbox.AddOutgoingMail(testLetter);
         }
-        if (Name == "The King's Assisstant")
+        if (Name == "Naked Man")
         {
-            Letter assisstantLetter = new Letter("The King", "The King's Assisstant");
-            assisstantLetter.FromResponse = "This is the assisstants from response";
-            assisstantLetter.ToResponse = "This is the assisstants to response";
-            assisstantLetter.PrereqLetters.Add(testLetter); 
+            Letter assisstantLetter = new Letter("Peasant", "Naked Man");
+            assisstantLetter.FromResponse = "Bring this to him, he'll rue the day...";
+            assisstantLetter.ToResponse = "What an imbicile he is...";
+            //assisstantLetter.PrereqLetters.Add(testLetter); 
             mailbox.AddOutgoingMail(assisstantLetter);
         }
         
