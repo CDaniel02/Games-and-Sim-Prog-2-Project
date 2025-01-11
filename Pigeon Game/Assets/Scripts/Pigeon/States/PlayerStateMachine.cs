@@ -10,11 +10,11 @@ public class PlayerStateMachine : StateMachine
 {
     public Vector3 Velocity;
     [SerializeField]
-    public float MovementSpeed { get; private set; } = 20f;
+    public float MovementSpeed { get; private set; } = 8f;
     [SerializeField]
     public float FlapForce { get; private set; } = 20f;
     [SerializeField]
-    public float LookRotationDampFactor { get; private set; } = 10;
+    public float LookRotationDampFactor { get; private set; } = 2;
     public Transform MainCamera { get; private set; }
     public InputReader InputReader { get; private set; }
     public Animator Animator { get; private set; }
