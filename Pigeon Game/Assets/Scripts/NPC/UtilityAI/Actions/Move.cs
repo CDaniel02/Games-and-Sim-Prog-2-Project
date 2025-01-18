@@ -7,6 +7,6 @@ public class Move: NPCAction
 {
     public override void Execute(NPCController npc)
     {
-        npc.Move();
+        //npc.Move();
     }
 }
