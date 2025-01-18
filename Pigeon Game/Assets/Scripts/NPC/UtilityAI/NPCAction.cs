@@ -22,5 +22,5 @@ public abstract class NPCAction : ScriptableObject
         Score = 0;
     }
 
-    public abstract void Execute();
+    public abstract void Execute(NPCController npc);
 }

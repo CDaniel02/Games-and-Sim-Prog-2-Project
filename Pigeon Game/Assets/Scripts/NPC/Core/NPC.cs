@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
@@ -22,7 +23,12 @@ public class NPC : MonoBehaviour
 
     public Mailbox mailbox; 
 
-    private Queue<string> _dialogQueue; 
+    private Queue<string> _dialogQueue;
+
+    private bool pigeonNearby = false;
+    public Vector3 npcSpawnPoint;
+    public Vector3 npcMovementEndPoint;
+    public float walkingDuration = 3.0f;
 
     public void Start()
     {
@@ -49,7 +55,22 @@ public class NPC : MonoBehaviour
         
         // ToMailbox[testLetter.To] = testLetter;
 
-        _dialogQueue = new Queue<string>(); 
+        _dialogQueue = new Queue<string>();
+        StartCoroutine(npcMove());
+    }
+
+    private IEnumerator npcMove()
+    {
+          while (pigeonNearby == false)
+        {
+            yield return null;
+            //StartCoroutine(npcMoveToPoint(npcSpawnPoint, npcMovementEndpoint));
+            //StartCoroutine(npcMoveToPoint(npcMovementEndpoint, npcSpawnPoint));
+        }
+    }
+    private IEnumerator npcMoveToPoint()
+    {
+       yield return null;
     }
 
     public bool Interact(PlayerStateMachine pigeon)
@@ -159,4 +180,6 @@ public class NPC : MonoBehaviour
         */ 
         
     }
+
+
 }
