@@ -16,5 +16,10 @@ public class StateMachine : MonoBehaviour
 	{
 		_currentState?.Update(); 
 	}
+
+    private void FixedUpdate()
+    {
+		_currentState?.FixedUpdate(); 
+    }
 }
 

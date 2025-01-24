@@ -9,10 +9,12 @@ using UnityEngine.InputSystem;
 public class PlayerStateMachine : StateMachine
 {
     public Vector3 Velocity;
+    public float Drag = 0.35f; 
     [SerializeField]
-    public float MovementSpeed { get; private set; } = 8f;
+    public float GroundedMovementSpeed { get; private set; } = 8f; 
+    public float AirborneMovementSpeed { get; private set; } = 20f;
     [SerializeField]
-    public float FlapForce { get; private set; } = 20f;
+    public float FlapForce { get; private set; } = 15f;
     [SerializeField]
     public float LookRotationDampFactor { get; private set; } = 2;
     public Transform MainCamera { get; private set; }

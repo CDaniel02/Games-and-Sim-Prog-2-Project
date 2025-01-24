@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public abstract class State
@@ -8,15 +9,23 @@ public abstract class State
 	public abstract void Enter();
 	public abstract void Update();
 	public abstract void Exit();
+    public abstract void FixedUpdate(); 
 }
 
 public abstract class PlayerBaseState : State
 {
+    // TODO: sometimes the first jump just doesnt work ?
+    // TODO: make a and d sway side to side
+
     protected readonly PlayerStateMachine stateMachine;
+    protected bool _canFlap;
+    protected float _flapCoolDown = 0.95f;
 
     protected PlayerBaseState(PlayerStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
+
+        _canFlap = true; 
 
         stateMachine.InputReader.OnInteractPerformed = Interact; 
     }
@@ -28,10 +37,52 @@ public abstract class PlayerBaseState : State
 
         Vector3 moveDirection = cameraForward.normalized * stateMachine.InputReader.MoveComposite.y + cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
 
-        stateMachine.Velocity.x = moveDirection.x * stateMachine.MovementSpeed;
-        stateMachine.Velocity.z = moveDirection.z * stateMachine.MovementSpeed;
+        return moveDirection; 
+    }
 
-        return stateMachine.Velocity; 
+    protected UnityEngine.Vector3 CalculateWalking()
+    {
+        Vector3 moveDirection = CalculateMoveDirection(); 
+
+        stateMachine.Velocity.x = moveDirection.x * stateMachine.GroundedMovementSpeed;
+        stateMachine.Velocity.z = moveDirection.z * stateMachine.GroundedMovementSpeed;
+
+        return stateMachine.Velocity;
+    }
+
+    protected UnityEngine.Vector3 CalculateFlying()
+    {
+        // this code is pretty messed up but this took me so long lol
+        Vector3 cameraForward = new(stateMachine.MainCamera.forward.x, 0, stateMachine.MainCamera.forward.z);
+        Vector3 cameraRight = new(stateMachine.MainCamera.right.x, 0, stateMachine.MainCamera.right.z);
+
+        Vector3 moveDirection = cameraForward.normalized * stateMachine.InputReader.MoveComposite.y + cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
+
+        Vector2 horizontalVelocity = new(stateMachine.Velocity.x, stateMachine.Velocity.z);
+
+        horizontalVelocity.x += moveDirection.x * (stateMachine.AirborneMovementSpeed * Time.deltaTime);
+        horizontalVelocity.y += moveDirection.z * (stateMachine.AirborneMovementSpeed * Time.deltaTime);
+
+        Vector2 forward = new(stateMachine.MainCamera.forward.x, stateMachine.MainCamera.forward.z);
+
+        Quaternion rotation = Quaternion.FromToRotation(horizontalVelocity, forward);
+        Vector2 rotatedFrom = rotation * horizontalVelocity;
+
+        stateMachine.Velocity.x = rotatedFrom.x;
+        stateMachine.Velocity.z = rotatedFrom.y;
+
+        CalculateDrag();
+
+        FaceMoveDirection();
+
+        Move(); 
+
+        return stateMachine.Velocity;
+    }
+
+    protected void CalculateDrag()
+    {
+        stateMachine.Velocity *= (1 - Time.deltaTime * stateMachine.Drag);
     }
 
     protected void FaceMoveDirection()
@@ -74,6 +125,33 @@ public abstract class PlayerBaseState : State
             }
         }
     }
+
+    protected void FlapWings()
+    {
+        if (_canFlap)
+        {
+            stateMachine.Animator.SetTrigger("Jumped");
+            Debug.Log("Flapping wings");
+            stateMachine.Velocity.y += stateMachine.FlapForce;
+
+            _canFlap = false;
+
+            IEnumerator validateFlapCoroutine = ValidateFlap();
+            stateMachine.StartCoroutine(validateFlapCoroutine);
+        }
+
+    }
+
+    private IEnumerator ValidateFlap()
+    {
+        yield return new WaitForSeconds(_flapCoolDown);
+        _canFlap = true;
+    }
+
+    public override void FixedUpdate()
+    {
+
+    }
 }
 
 public class PlayerGroundedState : PlayerBaseState
@@ -83,8 +161,8 @@ public class PlayerGroundedState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("GroundedState entered"); 
-        stateMachine.Velocity.y = Physics.gravity.y;
-        stateMachine.InputReader.OnJumpPerformed += SwitchToAirborneState;
+        // stateMachine.Velocity.y = Physics.gravity.y;
+        stateMachine.InputReader.OnJumpPerformed += FlapWings;
     }
 
     public override void Update()
@@ -94,7 +172,7 @@ public class PlayerGroundedState : PlayerBaseState
             stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
         }
 
-        UnityEngine.Vector3 playerMovement = CalculateMoveDirection();
+        UnityEngine.Vector3 playerMovement = CalculateWalking(); 
         stateMachine.Animator.SetFloat("GroundMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
         FaceMoveDirection();
         Move();
@@ -107,19 +185,10 @@ public class PlayerGroundedState : PlayerBaseState
         Debug.Log("Groundedstate exited");
         stateMachine.InputReader.OnJumpPerformedClear(); //-= SwitchToAirborneState;
     }
-
-    private void SwitchToAirborneState()
-    {
-        stateMachine.Animator.SetTrigger("Jumped"); 
-        stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
-    }
 }
 
 public class PlayerAirborneState : PlayerBaseState
 {
-    private bool _canFlap;
-    private float _flapCoolDown = 0.95f; 
-
     public PlayerAirborneState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         _canFlap = true; 
@@ -127,23 +196,21 @@ public class PlayerAirborneState : PlayerBaseState
 
     public override void Enter()
     {
+        stateMachine.Animator.SetTrigger("Jumped");
         Debug.Log("Airborne State entered"); 
-        stateMachine.Velocity.y = Physics.gravity.y; // half gravity? in air so that the pigeon falls down slowly 
+        // stateMachine.Velocity.y = Physics.gravity.y; // half gravity? in air so that the pigeon falls down slowly 
         stateMachine.InputReader.OnJumpPerformed += FlapWings;
 
-        // flap wings upon entering 
-        FlapWings(); 
         _canFlap = true; 
     }
 
     public override void Update()
     {
-        ApplyGravity(); 
+        ApplyGravity();
 
-        UnityEngine.Vector3 playerMovement = CalculateMoveDirection();
+        UnityEngine.Vector3 playerMovement = CalculateFlying(); 
         stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
-        FaceMoveDirection();
-        Move();
+
 
         if (stateMachine.Controller.isGrounded)
         {
@@ -162,30 +229,5 @@ public class PlayerAirborneState : PlayerBaseState
     {
         Debug.Log("Airbornestate exited"); 
         stateMachine.InputReader.OnJumpPerformed -= FlapWings;
-    }
-
-    private void FlapWings()
-    {
-        if(_canFlap)
-        {
-            stateMachine.Animator.SetTrigger("Jumped");
-            Debug.Log("Flapping wings");
-            // increase y velocity
-            stateMachine.Velocity.y += stateMachine.FlapForce;
-            // new Vector3(stateMachine.Velocity.x, stateMachine.FlapForce, stateMachine.Velocity.z);
-            // if moving forward, play one flap animation
-
-            _canFlap = false; 
-
-            IEnumerator validateFlapCoroutine = ValidateFlap(); 
-            stateMachine.StartCoroutine(validateFlapCoroutine); 
-        }
-
-    }
-
-    private IEnumerator ValidateFlap()
-    {
-        yield return new WaitForSeconds(_flapCoolDown);
-        _canFlap = true; 
     }
 }
