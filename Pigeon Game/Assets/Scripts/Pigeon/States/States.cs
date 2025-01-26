@@ -53,19 +53,33 @@ public abstract class PlayerBaseState : State
     protected UnityEngine.Vector3 CalculateFlying()
     {
         // this code is pretty messed up but this took me so long lol
-        Vector3 cameraForward = new(stateMachine.MainCamera.forward.x, 0, stateMachine.MainCamera.forward.z);
-        Vector3 cameraRight = new(stateMachine.MainCamera.right.x, 0, stateMachine.MainCamera.right.z);
+        Vector2 cameraForward = new(stateMachine.MainCamera.forward.x, stateMachine.MainCamera.forward.z);
+        Vector2 forward = cameraForward; 
+        Vector2 cameraRight = new(stateMachine.MainCamera.right.x, stateMachine.MainCamera.right.z);
 
-        Vector3 moveDirection = cameraForward.normalized * stateMachine.InputReader.MoveComposite.y + cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
+        Vector2 moveDirection = forward.normalized * stateMachine.InputReader.MoveComposite.y; // + cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
 
         Vector2 horizontalVelocity = new(stateMachine.Velocity.x, stateMachine.Velocity.z);
 
-        horizontalVelocity.x += moveDirection.x * (stateMachine.AirborneMovementSpeed * Time.deltaTime);
-        horizontalVelocity.y += moveDirection.z * (stateMachine.AirborneMovementSpeed * Time.deltaTime);
+        horizontalVelocity += moveDirection * (stateMachine.AirborneMovementSpeed * Time.deltaTime);
 
-        Vector2 forward = new(stateMachine.MainCamera.forward.x, stateMachine.MainCamera.forward.z);
+        stateMachine.Animator.SetFloat("Tilt", stateMachine.InputReader.MoveComposite.x); 
+        if(stateMachine.InputReader.MoveComposite.x != 0)
+        {
+
+            Vector2 angle = cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
+            angle += forward;
+
+            Quaternion angleRotation = Quaternion.FromToRotation(forward, angle);
+            Vector2 newForward = angleRotation * forward;
+
+            float step = stateMachine.AirborneMovementSpeed * stateMachine.RotationalFactor * Time.deltaTime;
+            forward = Vector2.MoveTowards(forward, newForward, step);
+        }
+
 
         Quaternion rotation = Quaternion.FromToRotation(horizontalVelocity, forward);
+        // rotation = rotation + stateMachine.InputReader.MoveComposite.x * 45;
         Vector2 rotatedFrom = rotation * horizontalVelocity;
 
         stateMachine.Velocity.x = rotatedFrom.x;
