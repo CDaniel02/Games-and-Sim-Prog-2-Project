@@ -3539,6 +3539,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   radius: 20
+  detectedable: 20
 --- !u!1001 &153506597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12522,6 +12523,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Velocity: {x: 0, y: -9.81, z: -0}
   Drag: 0.35
+  GroundedMovementSpeed: 8
+  AirborneMovementSpeed: 20
+  FlapForce: 15
+  RotationalFactor: 5
   interactRange: 5
   dialogBox: {fileID: 179845237}
   playerInput: {fileID: 0}
