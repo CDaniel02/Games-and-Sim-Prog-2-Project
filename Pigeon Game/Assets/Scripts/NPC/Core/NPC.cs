@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Experimental.GlobalIllumination;
 
 
 // renamed to just NPC NPC controller or something like that 
@@ -20,68 +21,60 @@ public class NPC : MonoBehaviour
     */
 
     public Mailbox mailbox;
-
     private Queue<string> _dialogQueue;
 
     private bool pigeonNearby = false;
-    public NavMeshAgent agent;
-    public float range; //radius of sphere
+    //public NavMeshAgent agent;
+    //public float range; //radius of sphere
     public Animator animator;
 
-    public Transform centrePoint; //centre of the area the agent wants to move around in
+    [Header("Reference to NPC Movement Attributes")]
+    public float npcMovementSpeed;
+    public List<Transform> npcMovementPoints;
+
+    //public Transform centrePoint; //centre of the area the agent wants to move around in
     //instead of centrePoint you can set it as the transform of the agent if you don't care about a specific area
 
     private void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
+        //agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         animator.SetBool("idle", true);
         mailbox = new Mailbox();
         Name = GetComponent<CapsuleCollider>().name;
-
         _dialogQueue = new Queue<string>();
-
+        if (!pigeonNearby && npcMovementPoints != null)
+        {
+            npcMove(npcMovementPoints, npcMovementSpeed);
+        }
     }
 
     private void Update()
     {
-        if (!pigeonNearby)
-        {
-            Move();
-        }
+        
         
     }
 
-    public void Move()
+    public void npcMove(List<Transform> pointList, float speed)
     {
-        if (agent.remainingDistance <= agent.stoppingDistance) //done with path
+        bool endOfRoute = false;
+        int waypointIndex = 0;
+        while (!endOfRoute)
         {
-            animator.SetBool("idle", true);
-            Vector3 point;
-            if (RandomPoint(centrePoint.position, range, out point)) //pass in our centre point and radius of area
+            transform.position = Vector3.MoveTowards(
+            transform.position,
+            pointList[waypointIndex].position,
+            speed * Time.deltaTime);
+
+            if(Vector3.Distance(transform.position, pointList[waypointIndex].position) < 0.1f)
             {
-                Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
-                agent.SetDestination(point);
-                animator.SetBool("idle", false);
+                waypointIndex++;
+                if(waypointIndex == pointList.Count - 1)
+                {
+                    endOfRoute = true;
+                }
             }
         }
-    }
-
-    private bool RandomPoint(Vector3 center, float range, out Vector3 result)
-    {
-
-        Vector3 randomPoint = center + Random.insideUnitSphere * range; //random point in a sphere 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas)) //documentation: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
-        {
-            //the 1.0f is the max distance from the random point to a point on the navmesh, might want to increase if range is big
-            //or add a for loop like in the documentation
-            result = hit.position;
-            return true;
-        }
-
-        result = Vector3.zero;
-        return false;
     }
 
     public bool Interact(PlayerStateMachine pigeon)
@@ -142,6 +135,7 @@ public class NPC : MonoBehaviour
         {
             Debug.Log("Pigeon is nearby I cant move");
             pigeonNearby = true;
+            animator.SetBool("idle", false);
         }
     }
 
@@ -151,8 +145,39 @@ public class NPC : MonoBehaviour
         {
             Debug.Log("Pigeon is gone I can move");
             pigeonNearby = false;
+            animator.SetBool("idle", true);
         }
     }
+    /*
+    public void Move()
+    {
+        if (agent.remainingDistance <= agent.stoppingDistance) //done with path
+        {
+            animator.SetBool("idle", true);
+            Vector3 point;
+            if (RandomPoint(centrePoint.position, range, out point)) //pass in our centre point and radius of area
+            {
+                Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f); //so you can see with gizmos
+                agent.SetDestination(point);
+                animator.SetBool("idle", false);
+            }
+        }
+    }
+    private bool RandomPoint(Vector3 center, float range, out Vector3 result)
+    {
 
+        Vector3 randomPoint = center + Random.insideUnitSphere * range; //random point in a sphere 
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas)) //documentation: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
+        {
+            //the 1.0f is the max distance from the random point to a point on the navmesh, might want to increase if range is big
+            //or add a for loop like in the documentation
+            result = hit.position;
+            return true;
+        }
 
+        result = Vector3.zero;
+        return false;
+    }
+*/
 }
