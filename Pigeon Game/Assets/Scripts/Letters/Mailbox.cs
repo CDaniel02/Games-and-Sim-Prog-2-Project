@@ -16,7 +16,6 @@ public class Mailbox
 
 	public void AddIncomingMail(Letter letter)
 	{
-		Debug.Log("Incoming Mail added to mailbox");
 		_incomingMailbox.Add(letter);
 		ValidateLetters(letter); 
 	}
@@ -26,13 +25,19 @@ public class Mailbox
         _outgoingMailbox.Add(letter);
     }
 
+	public void AddOutgoingMail(List<Letter> letters)
+	{
+		foreach(Letter letter in letters)
+		{
+			AddOutgoingMail(letter); 
+		}
+	}
+
     private void ValidateLetters(Letter givenLetter)
 	{
-		Debug.Log("Validate letters function called"); 
 		foreach(Letter letter in _outgoingMailbox)
 		{
 			letter.ValidatePrereqs(givenLetter);
-			Debug.Log("Letter has validated letters"); 
 		}
 	}
 

@@ -1,18 +1,18 @@
 ﻿start
 LetterId: 0
-To: Bart
-ToResponse: You must tell him
-From: Matt
-FromResponse: Oh he is wrong
-Body: We are in danger
+To: Naked Man
+ToResponse: How DARE he say this about me?
+From: Peasant
+FromResponse: Bring this to the Naked Man at the lake post-haste
+Body: You're looking kinda naked bro
 end
 
 start
 LetterId: 1
-To: Matt
-ToResponse: Alert him of this immediately
-From: Bart
-FromResponse: Obviously he is a FOOL
-Body: We are not in danger
+To: Peasant
+ToResponse: What an imbicile he is...
+From: Naked Man
+FromResponse: Bring this to him, he'll rue the day...
+Body: I can be naked as much as I want
 PrereqLetters: 0
 end

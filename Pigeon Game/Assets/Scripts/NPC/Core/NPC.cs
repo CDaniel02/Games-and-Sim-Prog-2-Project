@@ -36,28 +36,8 @@ public class NPC : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         animator.SetBool("idle", true);
-        // ToMailbox = new Dictionary<string, Letter>();
         mailbox = new Mailbox();
         Name = GetComponent<CapsuleCollider>().name;
-
-        Letter testLetter = new Letter("Naked Man", "Peasant");
-        testLetter.FromResponse = "Bring this to the Naked Man at the lake post-haste";
-        testLetter.ToResponse = "How DARE he say this about me?";
-        if (Name == "Peasant")
-        {
-            mailbox.AddOutgoingMail(testLetter);
-        }
-        if (Name == "Naked Man")
-        {
-            Letter assisstantLetter = new Letter("Peasant", "Naked Man");
-            assisstantLetter.FromResponse = "Bring this to him, he'll rue the day...";
-            assisstantLetter.ToResponse = "What an imbicile he is...";
-            //assisstantLetter.PrereqLetters.Add(testLetter); 
-            mailbox.AddOutgoingMail(assisstantLetter);
-        }
-
-
-        // ToMailbox[testLetter.To] = testLetter;
 
         _dialogQueue = new Queue<string>();
 
@@ -123,18 +103,15 @@ public class NPC : MonoBehaviour
         else
         {
             Letter letterToReceive;
+
             if (pigeon.CheckAndGiveLetter(this, out letterToReceive))
             {
                 mailbox.AddIncomingMail(letterToReceive);
-                Debug.Log("Mail added");
                 _dialogQueue.Enqueue("Thank you for the letter!");
                 _dialogQueue.Enqueue(letterToReceive.ToResponse);
             }
 
-
             List<Letter> outgoingMail = mailbox.GetOutgoingMail();
-            Debug.Log("Mail checked");
-            Debug.Log(Name + " outgoing mail count: " + outgoingMail.Count);
             if (outgoingMail.Count > 0)
             {
                 foreach (Letter letter in outgoingMail)
@@ -146,70 +123,17 @@ public class NPC : MonoBehaviour
                 }
 
                 _dialogQueue.Enqueue("end");
-                Interact(pigeon);
             }
             else
             {
                 _dialogQueue.Enqueue("I dont have any letters!");
                 _dialogQueue.Enqueue("end");
-                Interact(pigeon);
             }
+
+            Interact(pigeon);
         }
 
         return dialogBox.dialogPanel.activeInHierarchy;
-        /*
-        if (dialogBox.dialogPanel.activeInHierarchy)
-        {
-            dialogBox.dialogPanel.SetActive(false); 
-        }
-        else
-        {
-            if(ToMailbox.Count > 0)
-            {
-
-                foreach(KeyValuePair<string, Letter> letter in ToMailbox)
-                {
-                    dialogBox.ShowDialog("I have a letter to give you that goes to " + letter.Key + ".");
-                    pigeon.Letters[letter.Key] = letter.Value;
-                    ToMailbox.Remove(letter.Key);
-                }
-                /*foreach(KeyValuePair<string, Letter> letter in pigeon.Letters)
-                {
-                    dialogBox.ShowDialog("coo! I now have the letter that goes to " + letter.Key);
-                }
-                */
-
-
-        //     }
-        //     else
-        //     {
-        //         dialogBox.ShowDialog("I dont have any letters!");
-        //         foreach(KeyValuePair<string, Letter> letter in pigeon.Letters)
-        //         {
-        //             dialogBox.ShowDialog("coo! I now have the letter that goes to " + letter.Key);
-        //         }
-        //     }
-        // check if npc has a letter
-        // dialogbox letter from
-        // give pigeon letter
-
-        // dont have a letter, check if the pigeon has a letter that the npc wants
-
-
-        //}
-
-        /*
-        Letter letter;
-        if(pigeon.CheckLetter(this, out letter))
-        {
-            letter souansdna
-        }
-        else
-        {
-            oops youve got nothin
-        }
-        */
-
     }
 
     private void OnTriggerEnter(Collider collision)
