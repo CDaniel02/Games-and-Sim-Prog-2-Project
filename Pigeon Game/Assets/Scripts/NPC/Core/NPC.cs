@@ -4,22 +4,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Experimental.GlobalIllumination;
 
-
-// renamed to just NPC NPC controller or something like that 
-
 public class NPC : MonoBehaviour
 {
     // name field that gets pulled from the hierarchuy
     public string Name;
 
-    /*
-    private Dictionary<string, Letter> _toMailbox; 
-    public Dictionary<string, Letter> ToMailbox { get { return _toMailbox; } set { _toMailbox = value; } }
-
-    private Dictionary<string, Letter> _fromMailbox; 
-    public Dictionary<string, Letter> FromMailbox { get { return _fromMailbox; } set { _fromMailbox = value; } }
-    */
-
+    // mailbox holds outgoing and incoming mail
     public Mailbox mailbox;
     private Queue<string> _dialogQueue;
 
@@ -77,26 +67,37 @@ public class NPC : MonoBehaviour
         }
     }
 
+    // function that gets called when the pigeon interacts with the NPC
+    //
+    // this mostly works by queueing dialog into the dialogQueue, then
+    // running recursively to then read out that dialog to the player
+    //
+    // the player is meant to interact with the NPC multiple times until
+    // all the dialog queued by the first interaction runs out 
     public bool Interact(PlayerStateMachine pigeon)
     {
         DialogBox dialogBox = pigeon.dialogBox;
 
+        // we have already queued dialog
         if (_dialogQueue.Count > 0)
         {
+            // "end" is the sign we've run to the end of the dialog, and to turn the panel off
             if (_dialogQueue.Peek() == "end")
             {
                 _dialogQueue.Dequeue();
                 dialogBox.dialogPanel.SetActive(false);
             }
-            else
+            else // if its not end, we've got more dialog
             {
                 dialogBox.ShowDialog(_dialogQueue.Dequeue());
             }
         }
-        else
+        else // we have no dialog queued
         {
             Letter letterToReceive;
 
+            // if the player has a letter, we will thank them and give out
+            // the ToReponse 
             if (pigeon.CheckAndGiveLetter(this, out letterToReceive))
             {
                 mailbox.AddIncomingMail(letterToReceive);
@@ -104,9 +105,14 @@ public class NPC : MonoBehaviour
                 _dialogQueue.Enqueue(letterToReceive.ToResponse);
             }
 
-            List<Letter> outgoingMail = mailbox.GetOutgoingMail();
+            // retreive all mail that might be given out
+            // this is mail that has already validated all prereqs
+            List<Letter> outgoingMail = mailbox.RemoveOutgoingMail();
             if (outgoingMail.Count > 0)
             {
+                // if we have it we cycle through all avaiable letters
+                // queueing up dialog for each
+                // and then give the letter to the player 
                 foreach (Letter letter in outgoingMail)
                 {
                     _dialogQueue.Enqueue("I have a letter to give you that goes to " + letter.To + ".");
@@ -114,15 +120,18 @@ public class NPC : MonoBehaviour
                     _dialogQueue.Enqueue("*coo! I now have the letter that goes to " + letter.To + "*");
                     pigeon.Letters[letter.To] = letter;
                 }
-
-                _dialogQueue.Enqueue("end");
             }
             else
             {
+                // if we dont have any available mail, we simply
+                // tell the player that
                 _dialogQueue.Enqueue("I dont have any letters!");
-                _dialogQueue.Enqueue("end");
             }
 
+            // after everything, we should be done with dialog, and let the queue know that
+            _dialogQueue.Enqueue("end");
+
+            // run this function recursively to trigger the dialog to show
             Interact(pigeon);
         }
 
