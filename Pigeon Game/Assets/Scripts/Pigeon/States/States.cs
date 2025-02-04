@@ -245,3 +245,51 @@ public class PlayerAirborneState : PlayerBaseState
         stateMachine.InputReader.OnJumpPerformed -= FlapWings;
     }
 }
+
+
+// Dummy State for right now
+public class StunnedState : PlayerBaseState
+{
+    Vector3 _direction;  
+
+    public StunnedState(PlayerStateMachine stateMachine) : base(stateMachine)
+    {
+        _direction = new Vector3(0, 0, 0); 
+    }
+
+    public StunnedState(PlayerStateMachine stateMachine, Vector3 direction) : base(stateMachine)
+    {
+        _direction = direction; 
+    }
+
+    public override void Enter()
+    {
+        Debug.Log("Entered Stunned State");
+        IEnumerator coroutine = timer(); 
+        stateMachine.StartCoroutine(coroutine); 
+    }
+
+    public override void Update()
+    {
+        ApplyGravity(); 
+    }
+
+    public override void Exit()
+    {
+        Debug.Log("Exited Stunned State");
+    }
+
+    public IEnumerator timer()
+    {
+        yield return new WaitForSeconds(5f);
+
+        if(stateMachine.Controller.isGrounded)
+        {
+            stateMachine.SwitchState(new PlayerGroundedState(stateMachine)); 
+        }
+        else
+        {
+            stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
+        }
+    }
+}

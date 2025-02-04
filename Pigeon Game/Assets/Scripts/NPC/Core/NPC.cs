@@ -22,6 +22,10 @@ public class NPC : MonoBehaviour
     public float npcMovementSpeed;
     public List<Transform> npcMovementPoints;
 
+    public string ThankYouForLetter = "Thank you for the letter!"; 
+    public string IHaveALetterTo = "I have a letter to give you that goes to ";
+    public string IDontHaveAnyLetters = "I dont have any letters!"; 
+
     //public Transform centrePoint; //centre of the area the agent wants to move around in
     //instead of centrePoint you can set it as the transform of the agent if you don't care about a specific area
 
@@ -41,8 +45,8 @@ public class NPC : MonoBehaviour
 
     private void Update()
     {
-        
-        
+
+
     }
 
     public void npcMove(List<Transform> pointList, float speed)
@@ -56,10 +60,10 @@ public class NPC : MonoBehaviour
             pointList[waypointIndex].position,
             speed * Time.deltaTime);
 
-            if(Vector3.Distance(transform.position, pointList[waypointIndex].position) < 0.1f)
+            if (Vector3.Distance(transform.position, pointList[waypointIndex].position) < 0.1f)
             {
                 waypointIndex++;
-                if(waypointIndex == pointList.Count - 1)
+                if (waypointIndex == pointList.Count - 1)
                 {
                     endOfRoute = true;
                 }
@@ -101,7 +105,7 @@ public class NPC : MonoBehaviour
             if (pigeon.CheckAndGiveLetter(this, out letterToReceive))
             {
                 mailbox.AddIncomingMail(letterToReceive);
-                _dialogQueue.Enqueue("Thank you for the letter!");
+                _dialogQueue.Enqueue(ThankYouForLetter);
                 _dialogQueue.Enqueue(letterToReceive.ToResponse);
             }
 
@@ -115,17 +119,18 @@ public class NPC : MonoBehaviour
                 // and then give the letter to the player 
                 foreach (Letter letter in outgoingMail)
                 {
-                    _dialogQueue.Enqueue("I have a letter to give you that goes to " + letter.To + ".");
+                    _dialogQueue.Enqueue(IHaveALetterTo + letter.To + ".");
                     _dialogQueue.Enqueue(letter.FromResponse);
                     _dialogQueue.Enqueue("*coo! I now have the letter that goes to " + letter.To + "*");
                     pigeon.Letters[letter.To] = letter;
+                    Debug.Log("Letter that goes to " + letter.To + " added to pigeon mailbox"); 
                 }
             }
             else
             {
                 // if we dont have any available mail, we simply
                 // tell the player that
-                _dialogQueue.Enqueue("I dont have any letters!");
+                _dialogQueue.Enqueue(IDontHaveAnyLetters);
             }
 
             // after everything, we should be done with dialog, and let the queue know that
