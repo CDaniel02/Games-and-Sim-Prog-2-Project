@@ -49,10 +49,10 @@ public class PlayerStateMachine : StateMachine
     {
         bool result = false; 
 
-        if(_letters.ContainsKey(npc.Name))
+        if(Letters.ContainsKey(npc.Name))
         {
-            letter = _letters[npc.Name];
-            _letters.Remove(npc.Name); 
+            letter = Letters[npc.Name];
+            Letters.Remove(npc.Name); 
             result = true; 
         }
         else

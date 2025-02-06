@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine; 
+﻿using System.Collections.Generic;
+
+// used for holding mail in NPCs
+// outgoingmail may require certain incoming letters in order to be sent out
 
 public class Mailbox
 {
@@ -16,7 +17,6 @@ public class Mailbox
 
 	public void AddIncomingMail(Letter letter)
 	{
-		Debug.Log("Incoming Mail added to mailbox");
 		_incomingMailbox.Add(letter);
 		ValidateLetters(letter); 
 	}
@@ -26,17 +26,26 @@ public class Mailbox
         _outgoingMailbox.Add(letter);
     }
 
-    private void ValidateLetters(Letter givenLetter)
+	public void AddOutgoingMail(List<Letter> letters)
 	{
-		Debug.Log("Validate letters function called"); 
-		foreach(Letter letter in _outgoingMailbox)
+		foreach(Letter letter in letters)
 		{
-			letter.ValidatePrereqs(givenLetter);
-			Debug.Log("Letter has validated letters"); 
+			AddOutgoingMail(letter); 
 		}
 	}
 
-	public List<Letter> GetOutgoingMail()
+	// checks all the letters in the outgoing mailbox to see if we've received a letter that is a prereq for another letter
+    private void ValidateLetters(Letter givenLetter)
+	{
+		foreach(Letter letter in _outgoingMailbox)
+		{
+			letter.ValidatePrereqs(givenLetter);
+		}
+	}
+
+    // retrieves all mail available to be sent out and deletes from the mailbox
+	// essentially GIVES OUT avaiable mail
+    public List<Letter> RemoveOutgoingMail()
 	{
 		List<Letter> toReturn = new List<Letter>();
 
