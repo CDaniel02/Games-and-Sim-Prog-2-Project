@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Experimental.GlobalIllumination;
+
 
 public class NPC : MonoBehaviour
 {
@@ -13,14 +12,18 @@ public class NPC : MonoBehaviour
     public Mailbox mailbox;
     private Queue<string> _dialogQueue;
 
-    private bool pigeonNearby = false;
+    
     //public NavMeshAgent agent;
     //public float range; //radius of sphere
     public Animator animator;
+    private bool pigeonNearby;
 
-    [Header("Reference to NPC Movement Attributes")]
-    public float npcMovementSpeed;
-    public List<Transform> npcMovementPoints;
+    [Header("Reference to NPC Patrol Movement Attributes")]
+    public float npcSpeed;
+    public float npcRotationSpeed;
+    public int targetPoint;
+    public bool isLoop;
+    public List<Transform> patrolPoints;
 
     public string ThankYouForLetter = "Thank you for the letter!"; 
     public string IHaveALetterTo = "I have a letter to give you that goes to ";
@@ -33,41 +36,61 @@ public class NPC : MonoBehaviour
     {
         //agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        animator.SetBool("idle", true);
         mailbox = new Mailbox();
         Name = GetComponent<CapsuleCollider>().name;
         _dialogQueue = new Queue<string>();
-        if (!pigeonNearby && npcMovementPoints != null)
+        
+        StartMoving();
+    }
+
+    public void StartMoving()
+    {
+        targetPoint = 0;
+        pigeonNearby = false;
+    }
+    private void Update()
+    {
+        if (pigeonNearby)
         {
-            npcMove(npcMovementPoints, npcMovementSpeed);
+            return;
+        }
+        if(targetPoint < patrolPoints.Count)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, patrolPoints[targetPoint].position, npcSpeed * Time.deltaTime);
+            Vector3 direction = -(transform.position - patrolPoints[targetPoint].position);
+            Debug.Log("the direction is" + direction);
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, npcRotationSpeed * Time.deltaTime);
+            float distance = Vector3.Distance(transform.position, patrolPoints[targetPoint].position);
+            if (distance <= 0.05f)
+            {
+                targetPoint++;
+                if(isLoop && targetPoint >= patrolPoints.Count)
+                {
+                    targetPoint = 0;
+                }
+            }
+        }
+
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            Debug.Log("Pigeon is nearby I cant move");
+            pigeonNearby = true;
+            animator.SetBool("pigeonNearby", true);
         }
     }
 
-    private void Update()
+    private void OnTriggerExit(Collider collision)
     {
-
-
-    }
-
-    public void npcMove(List<Transform> pointList, float speed)
-    {
-        bool endOfRoute = false;
-        int waypointIndex = 0;
-        while (!endOfRoute)
+        if (collision.CompareTag("Player"))
         {
-            transform.position = Vector3.MoveTowards(
-            transform.position,
-            pointList[waypointIndex].position,
-            speed * Time.deltaTime);
-
-            if (Vector3.Distance(transform.position, pointList[waypointIndex].position) < 0.1f)
-            {
-                waypointIndex++;
-                if (waypointIndex == pointList.Count - 1)
-                {
-                    endOfRoute = true;
-                }
-            }
+            Debug.Log("Pigeon is gone I can move");
+            pigeonNearby = false;
+            animator.SetBool("pigeonNearby", false);
         }
     }
 
@@ -143,25 +166,7 @@ public class NPC : MonoBehaviour
         return dialogBox.dialogPanel.activeInHierarchy;
     }
 
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            Debug.Log("Pigeon is nearby I cant move");
-            pigeonNearby = true;
-            animator.SetBool("idle", false);
-        }
-    }
 
-    private void OnTriggerExit(Collider collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            Debug.Log("Pigeon is gone I can move");
-            pigeonNearby = false;
-            animator.SetBool("idle", true);
-        }
-    }
     /*
     public void Move()
     {
