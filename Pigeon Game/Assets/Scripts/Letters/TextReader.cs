@@ -31,6 +31,7 @@ public class TextReader : MonoBehaviour
         {
             if (_npcs.ContainsKey(letter.From))
             {
+                Debug.Log("Letter added to " + letter.From); 
                 _npcs[letter.From].mailbox.AddOutgoingMail(letter);
             }
 
