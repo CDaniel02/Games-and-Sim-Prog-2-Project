@@ -122,7 +122,7 @@ public class NPC : MonoBehaviour
                     _dialogQueue.Enqueue(IHaveALetterTo + letter.To + ".");
                     _dialogQueue.Enqueue(letter.FromResponse);
                     _dialogQueue.Enqueue("*coo! I now have the letter that goes to " + letter.To + "*");
-                    pigeon.Letters[letter.To] = letter;
+                    pigeon.AddLetter(letter);
                     Debug.Log("Letter that goes to " + letter.To + " added to pigeon mailbox"); 
                 }
             }

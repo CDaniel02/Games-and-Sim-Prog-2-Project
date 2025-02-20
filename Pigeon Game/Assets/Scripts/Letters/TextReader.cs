@@ -32,7 +32,6 @@ public class TextReader : MonoBehaviour
             if (_npcs.ContainsKey(letter.From))
             {
                 _npcs[letter.From].mailbox.AddOutgoingMail(letter);
-                Debug.Log("Added letter to " + letter.From + " that goes to " + letter.To + "."); 
             }
 
         }
