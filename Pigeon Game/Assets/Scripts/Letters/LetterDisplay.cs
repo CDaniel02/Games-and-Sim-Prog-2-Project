@@ -8,15 +8,19 @@ public class LetterDisplay : MonoBehaviour
 	public GameObject LetterPrefab;
 
 	public float LetterSpeed = 10f; 
+	public int FirstLetterX = -550;
 	public int LetterY = -235;
-	public int FirstLetterX = -255;
-	public int DisplayLetterY = 160;
 	public int LetterZ = 50;
+	public int DisplayLetterX = -255; 
+	public int DisplayLetterY = 160;
 	public int DisplayLetterZ = -225;
 
-	public int LetterDistanceApart = 220; 
+	// TODO: make this reactive to screen size
+	public int LetterDistanceApart = 220;
+	public int MaxLettersBeforeOverlap = 6;
+	public int TotalLetterDistance; 
 
-	private List<GameObject> _letters;
+    private List<GameObject> _letters;
 	private GameObject _displayLetter; 
     private GameObject LetterOnDisplay
 	{
@@ -44,6 +48,8 @@ public class LetterDisplay : MonoBehaviour
 		NotificationCenter.Instance.AddObserver("LetterAdded", LetterAdded);
         NotificationCenter.Instance.AddObserver("LetterRemoved", LetterRemoved);
         NotificationCenter.Instance.AddObserver("LetterClicked", LetterClicked);
+
+        TotalLetterDistance = LetterDistanceApart * MaxLettersBeforeOverlap;
     }
 
 	void Update()
@@ -54,16 +60,17 @@ public class LetterDisplay : MonoBehaviour
 		// letters stay in their spot
 		// letter on display goes to a special little spot
 
-		int letterXValue = FirstLetterX; 
+		int letterXValue = FirstLetterX;
+		int letterDistance = TotalLetterDistance / _letters.Count; 
 		foreach(GameObject letter in _letters)
 		{
 			letter.transform.localPosition = Vector3.Lerp(letter.transform.localPosition, new Vector3(letterXValue, LetterY, LetterZ), LetterSpeed * Time.deltaTime);
-			letterXValue += LetterDistanceApart; 
+			letterXValue += letterDistance; 
 		}
 
         if (LetterOnDisplay != null)
         {
-            Vector3 displayLetterPos = new Vector3(FirstLetterX, DisplayLetterY, DisplayLetterZ);
+            Vector3 displayLetterPos = new Vector3(DisplayLetterX, DisplayLetterY, DisplayLetterZ);
             _displayLetter.transform.localPosition = Vector3.Lerp( _displayLetter.transform.localPosition, displayLetterPos, LetterSpeed * Time.deltaTime);
             //_displayLetter.transform.localPosition = new Vector3(FirstLetterX, DisplayLetterY, DisplayLetterZ);
         }
