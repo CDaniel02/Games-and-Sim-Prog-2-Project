@@ -10,7 +10,7 @@ public class NPC : MonoBehaviour
     public string Name;
 
     // mailbox holds outgoing and incoming mail
-    public Mailbox mailbox;
+    public Mailbox mailbox = new Mailbox();
     private Queue<string> _dialogQueue;
 
     private bool pigeonNearby = false;
@@ -34,10 +34,11 @@ public class NPC : MonoBehaviour
         //agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         animator.SetBool("idle", true);
-        mailbox = new Mailbox();
+        // mailbox = new Mailbox();
         Name = GetComponent<CapsuleCollider>().name;
         _dialogQueue = new Queue<string>();
-        if (!pigeonNearby && npcMovementPoints != null)
+        npcMovementPoints = new List<Transform>(); 
+        if (!pigeonNearby && npcMovementPoints != null && npcMovementPoints.Count > 0)
         {
             npcMove(npcMovementPoints, npcMovementSpeed);
         }
