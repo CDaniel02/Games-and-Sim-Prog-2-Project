@@ -15,7 +15,8 @@ public class LetterDisplay : MonoBehaviour
 	public int DisplayLetterY = 160;
 	public int DisplayLetterZ = -225;
 
-	// TODO: make this reactive to screen size
+	// TODO: make this dynamic to screen size
+	// but make all the letters center most of the time
 	public int LetterDistanceApart = 220;
 	public int MaxLettersBeforeOverlap = 6;
 	public int TotalLetterDistance; 
@@ -60,12 +61,23 @@ public class LetterDisplay : MonoBehaviour
 		// letters stay in their spot
 		// letter on display goes to a special little spot
 
-		int letterXValue = FirstLetterX;
-		int letterDistance = TotalLetterDistance / _letters.Count; 
-		foreach(GameObject letter in _letters)
+		if (_letters.Count > 0)
 		{
-			letter.transform.localPosition = Vector3.Lerp(letter.transform.localPosition, new Vector3(letterXValue, LetterY, LetterZ), LetterSpeed * Time.deltaTime);
-			letterXValue += letterDistance; 
+			int letterXValue = FirstLetterX;
+			int letterDistance = 0; 
+			if(_letters.Count > MaxLettersBeforeOverlap)
+			{
+                letterDistance = TotalLetterDistance / _letters.Count;
+            }
+			else
+			{
+                letterDistance = LetterDistanceApart;
+            }
+            foreach (GameObject letter in _letters)
+			{
+				letter.transform.localPosition = Vector3.Lerp(letter.transform.localPosition, new Vector3(letterXValue, LetterY, LetterZ), LetterSpeed * Time.deltaTime);
+				letterXValue += letterDistance;
+			}
 		}
 
         if (LetterOnDisplay != null)
@@ -106,11 +118,14 @@ public class LetterDisplay : MonoBehaviour
 					letterToRemove = currentLetter; 
 				}
 			}
-			if(letterToRemove != null)
+
+			if(letterToRemove == null)
 			{
-				_letters.Remove(letterToRemove);
-				Destroy(letterToRemove); 
-			}
+				letterToRemove = LetterOnDisplay; 
+                LetterOnDisplay = null;
+            }
+            _letters.Remove(letterToRemove);
+            Destroy(letterToRemove);
         }
     }
 
@@ -120,14 +135,14 @@ public class LetterDisplay : MonoBehaviour
 		InputReader inputReader = (InputReader)notification.UserInfo["InputReader"];
 		if (letter != null)
 		{
-			if(LetterOnDisplay == null)
+			if(LetterOnDisplay != null && LetterOnDisplay.Equals(letter))
 			{
-                LetterOnDisplay = letter;
-            }
+				LetterOnDisplay = null; 
+			}
 			else
 			{
-                LetterOnDisplay = null;
-            }
+				LetterOnDisplay = letter;
+			}
         }
     }
 }
