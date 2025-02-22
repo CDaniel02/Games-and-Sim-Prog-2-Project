@@ -58,7 +58,7 @@ public class NPC : MonoBehaviour
         {
             transform.position = Vector3.MoveTowards(transform.position, patrolPoints[targetPoint].position, npcSpeed * Time.deltaTime);
             Vector3 direction = -(transform.position - patrolPoints[targetPoint].position);
-            Debug.Log("the direction is" + direction);
+            //Debug.Log("the direction is" + direction);
             Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, npcRotationSpeed * Time.deltaTime);
             float distance = Vector3.Distance(transform.position, patrolPoints[targetPoint].position);
