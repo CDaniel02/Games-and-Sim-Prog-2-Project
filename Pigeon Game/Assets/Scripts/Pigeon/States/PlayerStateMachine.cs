@@ -11,8 +11,9 @@ public class PlayerStateMachine : StateMachine
     public Vector3 Velocity;
     public float Drag = 0.35f; 
     public float GroundedMovementSpeed = 8f; 
-    public float AirborneMovementSpeed = 20f;
+    public float AirborneMovementSpeed = 30f;
     public float FlapForce = 15f;
+    public float TakeOffMultiplier = 1.5f; 
     public float RotationalFactor = 5f; 
     public float LookRotationDampFactor { get; private set; } = 2;
     public Transform MainCamera { get; private set; }
@@ -21,11 +22,12 @@ public class PlayerStateMachine : StateMachine
     public CharacterController Controller { get; private set; }
     public int interactRange = 5;
     public DialogBox dialogBox;
+    public Camera UICamera; 
 
     public PlayerInput playerInput;
 
     private Dictionary<string, Letter> _letters;
-    public Dictionary<string, Letter> Letters { get { return _letters; } set { _letters = value; } }
+    // public Dictionary<string, Letter> Letters { get { return _letters; } set { _letters = value; } }
 
     private void Start()
     {
@@ -35,7 +37,9 @@ public class PlayerStateMachine : StateMachine
         Animator = GetComponent<Animator>();
         Controller = GetComponent<CharacterController>();
 
-        Letters = new Dictionary<string, Letter>(); 
+        _letters = new Dictionary<string, Letter>();
+
+        Cursor.lockState = CursorLockMode.Locked; 
 
         SwitchState(new PlayerAirborneState(this));
     }
@@ -49,11 +53,14 @@ public class PlayerStateMachine : StateMachine
     {
         bool result = false; 
 
-        if(Letters.ContainsKey(npc.Name))
+        if(_letters.ContainsKey(npc.Name))
         {
-            letter = Letters[npc.Name];
-            Letters.Remove(npc.Name); 
-            result = true; 
+            letter = _letters[npc.Name];
+            _letters.Remove(npc.Name); 
+            result = true;
+
+            Notification notification = new("LetterRemoved", letter);
+            NotificationCenter.Instance.PostNotification(notification); 
         }
         else
         {
@@ -61,5 +68,13 @@ public class PlayerStateMachine : StateMachine
         }
 
         return result; 
+    }
+
+    public void AddLetter(Letter letter)
+    {
+        _letters[letter.To] = letter;
+
+        Notification notification = new("LetterAdded", letter);
+        NotificationCenter.Instance.PostNotification(notification);
     }
 }

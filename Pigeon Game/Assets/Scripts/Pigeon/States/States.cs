@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -27,7 +28,9 @@ public abstract class PlayerBaseState : State
 
         _canFlap = true; 
 
-        stateMachine.InputReader.OnInteractPerformed = Interact; 
+        stateMachine.InputReader.OnInteractPerformed = Interact;
+        stateMachine.InputReader.OnUnlockCursorPerformed = UnlockCurser;
+        stateMachine.InputReader.OnClickPerformed = ClickPerformed; 
     }
 
     protected UnityEngine.Vector3 CalculateMoveDirection()
@@ -140,12 +143,56 @@ public abstract class PlayerBaseState : State
         }
     }
 
+    protected void UnlockCurser()
+    {
+        if(Cursor.lockState == CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        
+    }
+
+    protected void ClickPerformed()
+    {
+        LayerMask layerMask = stateMachine.UICamera.cullingMask;
+
+        Vector3 mousePos = stateMachine.InputReader.MousePosition;
+        Ray ray = stateMachine.UICamera.ScreenPointToRay(mousePos);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        {
+            GameObject letter = hit.collider.gameObject; 
+            Debug.Log("Hit " + letter.name + "!");
+
+            Notification notification = new("LetterClicked", letter);
+            notification.UserInfo["InputReader"] = stateMachine.InputReader; 
+            NotificationCenter.Instance.PostNotification(notification); 
+
+            //IEnumerator drag = Drag(hit.collider.gameObject);
+            //stateMachine.StartCoroutine(drag);
+        }
+    }
+
+    protected IEnumerator Drag(GameObject objectToDrag)
+    {
+        yield return new WaitForSeconds(0.4f);
+
+        while (stateMachine.InputReader.MouseDown)
+        {
+            Vector3 mousePos = stateMachine.InputReader.MousePosition;
+            Vector3.Lerp(objectToDrag.transform.position, mousePos, 1); 
+        }
+    }
+
     protected void FlapWings()
     {
         if (_canFlap)
         {
             stateMachine.Animator.SetTrigger("Jumped");
-            Debug.Log("Flapping wings");
             stateMachine.Velocity.y += stateMachine.FlapForce;
 
             _canFlap = false;
@@ -153,7 +200,12 @@ public abstract class PlayerBaseState : State
             IEnumerator validateFlapCoroutine = ValidateFlap();
             stateMachine.StartCoroutine(validateFlapCoroutine);
         }
+    }
 
+    protected void TakeOff()
+    {
+        stateMachine.Animator.SetTrigger("Jumped");
+        stateMachine.Velocity.y += stateMachine.FlapForce * stateMachine.TakeOffMultiplier;
     }
 
     private IEnumerator ValidateFlap()
@@ -176,7 +228,7 @@ public class PlayerGroundedState : PlayerBaseState
     {
         Debug.Log("GroundedState entered"); 
         // stateMachine.Velocity.y = Physics.gravity.y;
-        stateMachine.InputReader.OnJumpPerformed += FlapWings;
+        stateMachine.InputReader.OnJumpPerformed += TakeOff;
     }
 
     public override void Update()
