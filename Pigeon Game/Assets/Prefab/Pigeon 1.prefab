@@ -399,7 +399,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MouseDelta: {x: 0, y: 0}
   MousePosition: {x: 0, y: 0}
-  LastClickedPoint: {x: 0, y: 0, z: 0}
   MoveComposite: {x: 0, y: 0}
   MouseDown: 0
 --- !u!114 &4644210645751519487
@@ -424,6 +423,8 @@ MonoBehaviour:
   interactRange: 5
   dialogBox: {fileID: 0}
   UICamera: {fileID: 0}
+  TimeToDragLetter: 0.1
+  NPCInDialogWith: {fileID: 0}
   playerInput: {fileID: 0}
 --- !u!1 &2462663315523710056
 GameObject:
@@ -709,7 +710,7 @@ Transform:
   m_GameObject: {fileID: 3311704121444708554}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.013089582, z: 0, w: 0.99991435}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

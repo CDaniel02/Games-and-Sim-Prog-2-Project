@@ -478,6 +478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83452c805a5584298b81ee8f83afe8a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testZ: 685
   LetterPrefab: {fileID: 5360152063364625195, guid: 4ae95ce906b934bfd9948e8ed02327dc, type: 3}
   UICamera: {fileID: 5220730875197980320}
   LetterSpeed: 10

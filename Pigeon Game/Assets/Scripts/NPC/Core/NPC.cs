@@ -9,7 +9,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
     public string Name;
 
     // mailbox holds outgoing and incoming mail
-    public Mailbox mailbox;
+    public Mailbox mailbox = new Mailbox();
     private Queue<string> _dialogQueue;
 
     
@@ -36,8 +36,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
     {
         //agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        mailbox = new Mailbox();
-        Name = GetComponent<CapsuleCollider>().name;
+        Name = gameObject.name;
         _dialogQueue = new Queue<string>();
         
         StartMoving();
