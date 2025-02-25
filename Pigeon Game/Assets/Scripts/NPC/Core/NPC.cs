@@ -183,16 +183,6 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
         Interact(stateMachine); 
     }
 
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            Debug.Log("Pigeon is nearby I cant move");
-            pigeonNearby = true;
-            animator.SetBool("idle", false);
-        }
-    }
-
     /*
     public void Move()
     {
