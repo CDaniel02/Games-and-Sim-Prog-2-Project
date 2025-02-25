@@ -81,7 +81,17 @@ public class TextReader : MonoBehaviour
                             }
 
                             currentLetter.PrereqLetters = letterIndexes; 
-                            
+                        } // same for the deliveredprereqletters 
+                        else if(property == "DeliveredPrereqLetters")
+                        {
+                            string[] indexesAsStrings = value.Split(", ");
+                            List<int> letterIndexes = new List<int>();
+                            foreach (string letterIndex in indexesAsStrings)
+                            {
+                                letterIndexes.Add(int.Parse(letterIndex));
+                            }
+
+                            currentLetter.DeliveredPrereqLetters = letterIndexes;
                         }
                         else
                         {

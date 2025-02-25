@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections;
 using UnityEditor.Rendering;
 using UnityEngine;
@@ -7,10 +8,10 @@ using UnityEngine.InputSystem;
 
 public abstract class State
 {
-	public abstract void Enter();
-	public abstract void Update();
-	public abstract void Exit();
-    public abstract void FixedUpdate(); 
+    public abstract void Enter();
+    public abstract void Update();
+    public abstract void Exit();
+    public abstract void FixedUpdate();
 }
 
 public abstract class PlayerBaseState : State
@@ -26,11 +27,11 @@ public abstract class PlayerBaseState : State
     {
         this.stateMachine = stateMachine;
 
-        _canFlap = true; 
+        _canFlap = true;
 
+        stateMachine.InputReader.OnInteractPerformed = Interact;
         stateMachine.InputReader.OnUnlockCursorPerformed = UnlockCurser;
         stateMachine.InputReader.OnClickPerformed = ClickPerformed;
-        stateMachine.InputReader.OnDialogPerformed = Dialog;
     }
 
     protected UnityEngine.Vector3 CalculateMoveDirection()
@@ -40,12 +41,12 @@ public abstract class PlayerBaseState : State
 
         Vector3 moveDirection = cameraForward.normalized * stateMachine.InputReader.MoveComposite.y + cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
 
-        return moveDirection; 
+        return moveDirection;
     }
 
     protected UnityEngine.Vector3 CalculateWalking()
     {
-        Vector3 moveDirection = CalculateMoveDirection(); 
+        Vector3 moveDirection = CalculateMoveDirection();
 
         stateMachine.Velocity.x = moveDirection.x * stateMachine.GroundedMovementSpeed;
         stateMachine.Velocity.z = moveDirection.z * stateMachine.GroundedMovementSpeed;
@@ -57,7 +58,7 @@ public abstract class PlayerBaseState : State
     {
         // this code is pretty messed up but this took me so long lol
         Vector2 cameraForward = new(stateMachine.MainCamera.forward.x, stateMachine.MainCamera.forward.z);
-        Vector2 forward = cameraForward; 
+        Vector2 forward = cameraForward;
         Vector2 cameraRight = new(stateMachine.MainCamera.right.x, stateMachine.MainCamera.right.z);
 
         Vector2 moveDirection = forward.normalized * stateMachine.InputReader.MoveComposite.y; // + cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
@@ -66,8 +67,8 @@ public abstract class PlayerBaseState : State
 
         horizontalVelocity += moveDirection * (stateMachine.AirborneMovementSpeed * Time.deltaTime);
 
-        stateMachine.Animator.SetFloat("Tilt", stateMachine.InputReader.MoveComposite.x); 
-        if(stateMachine.InputReader.MoveComposite.x != 0)
+        stateMachine.Animator.SetFloat("Tilt", stateMachine.InputReader.MoveComposite.x);
+        if (stateMachine.InputReader.MoveComposite.x != 0)
         {
 
             Vector2 angle = cameraRight.normalized * stateMachine.InputReader.MoveComposite.x;
@@ -92,7 +93,7 @@ public abstract class PlayerBaseState : State
 
         FaceMoveDirection();
 
-        Move(); 
+        Move();
 
         return stateMachine.Velocity;
     }
@@ -122,9 +123,59 @@ public abstract class PlayerBaseState : State
         stateMachine.Controller.Move(stateMachine.Velocity * Time.deltaTime);
     }
 
+    protected void Interact()
+    {
+        Collider[] colliderArray = Physics.OverlapSphere(stateMachine.gameObject.transform.position, stateMachine.interactRange);
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out NPC npc))
+            {
+                bool active = npc.Interact(stateMachine);
+                if (active)
+                {
+                    stateMachine.SwitchActionMap("Dialog");
+                    // TODO: freeze bird when talking bc it would be cool (and prevent soltlocking) 
+                }
+                else
+                {
+                    stateMachine.SwitchActionMap("Player");
+                }
+            }
+        }
+    }
+
+    protected void DragAndDropInteract()
+    {
+        Debug.Log("Attempting to hit an npc");
+        // LayerMask layerMask = LayerMask.GetMask("NPC");
+        LayerMask layerMask = Camera.main.cullingMask;
+        Vector3 mousePos = stateMachine.InputReader.MousePosition;
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        {
+            GameObject npc = hit.collider.gameObject;
+            Debug.Log("Hit " + npc.name + "!");
+
+            bool active = npc.GetComponent<NPC>().Interact(stateMachine, stateMachine.LetterHolding);
+            stateMachine.RemoveLetter(stateMachine.LetterHolding);
+
+            if (active)
+            {
+                stateMachine.SwitchActionMap("Dialog");
+                // TODO: freeze bird when talking bc it would be cool (and prevent soltlocking) 
+            }
+            else
+            {
+                stateMachine.SwitchActionMap("Player");
+            }
+        }
+        stateMachine.LetterHolding = null;
+    }
+
     protected void UnlockCurser()
     {
-        if(Cursor.lockState == CursorLockMode.None)
+        if (Cursor.lockState == CursorLockMode.None)
         {
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -132,22 +183,11 @@ public abstract class PlayerBaseState : State
         {
             Cursor.lockState = CursorLockMode.None;
         }
-        
+
     }
 
     protected void ClickPerformed()
     {
-        if(stateMachine.InputReader.MouseDown)
-        {
-            IEnumerator drag = CheckIfDrag(); 
-            stateMachine.StartCoroutine(drag);
-        }
-        else
-        {
-            ClickRelease(); 
-        }
-
-        /*
         if (stateMachine.InputReader.MouseDown)
         {
             LayerMask layerMask = stateMachine.UICamera.cullingMask;
@@ -166,118 +206,34 @@ public abstract class PlayerBaseState : State
         }
         else
         {
-            if(stateMachine.LetterHolding != null)
+            if (stateMachine.LetterHolding != null)
             {
-                DragAndDropInteract(); 
+                DragAndDropInteract();
             }
 
             Notification notification = new("ClickStopped", stateMachine.InputReader);
             NotificationCenter.Instance.PostNotification(notification);
         }
-        */
     }
 
-    protected IEnumerator CheckIfDrag()
+    protected IEnumerator Drag(GameObject letter)
     {
         yield return new WaitForSeconds(stateMachine.TimeToDragLetter);
 
-        if(stateMachine.InputReader.MouseDown)
+        if (stateMachine.InputReader.MouseDown)
         {
-            Drag(); 
-        }
-        else
-        {
-            Click(); 
-        }
-    }
+            stateMachine.LetterHolding = letter.GetComponent<LetterScript>().thisLetter;
+            Debug.Log("Holding letter " + stateMachine.LetterHolding.LetterId);
 
-    protected GameObject FindObjectWhereMouseIs()
-    {
-        GameObject objectHit = null;
-
-        LayerMask layerMask = stateMachine.UICamera.cullingMask;
-        Vector3 mousePos = stateMachine.InputReader.MousePosition;
-        Ray ray = stateMachine.UICamera.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) // TODO: help performance with removing infinity
-        {
-            objectHit = hit.collider.gameObject;
-            Debug.Log("Hit " + objectHit.name + "!");
-        }
-        else
-        {
-            LayerMask mainCamLayerMask = Camera.main.cullingMask;
-            Ray mainCamRay = Camera.main.ScreenPointToRay(mousePos);
-            if (Physics.Raycast(mainCamRay, out hit, Mathf.Infinity, mainCamLayerMask)) // TODO: limit how far away you can click something 
-            {
-                objectHit = hit.collider.gameObject;
-                Debug.Log("Hit " + objectHit.name + "!");
-            }
-        }
-
-        return objectHit; 
-    }
-
-    protected void Click()
-    {
-        GameObject objectHit = FindObjectWhereMouseIs(); 
-
-        if(objectHit != null && objectHit.TryGetComponent(out IClickable component))
-        {
-            component.Click(stateMachine);
-
-            Notification notification = new("Clicked", component);
+            Notification notification = new("LetterDrag", letter);
             notification.UserInfo["InputReader"] = stateMachine.InputReader;
             NotificationCenter.Instance.PostNotification(notification);
         }
         else
         {
-            Debug.Log("object was not clickable"); 
-        }
-    }
-
-    protected void Drag()
-    {
-        GameObject objectHit = FindObjectWhereMouseIs();
-
-        if (objectHit != null && objectHit.TryGetComponent(out IDragable component))
-        {
-            component.Drag(stateMachine);
-
-            Notification notification = new("Drag", component);
+            Notification notification = new("LetterClicked", letter);
             notification.UserInfo["InputReader"] = stateMachine.InputReader;
             NotificationCenter.Instance.PostNotification(notification);
-        }
-        else
-        {
-            Debug.Log("object was not dragable");
-            Click(); 
-        }
-    }
-
-    protected void ClickRelease()
-    {
-        if(stateMachine.LetterHolding != null)
-        {
-            GameObject objectHit = FindObjectWhereMouseIs();
-
-            if(objectHit != null && objectHit.TryGetComponent(out ITakesLetters component)) 
-            {
-                component.TakeLetter(stateMachine);
-            }
-
-            stateMachine.LetterHolding = null; 
-        }
-
-        Notification notification = new("ClickStopped", stateMachine.InputReader);
-        NotificationCenter.Instance.PostNotification(notification);
-    }
-
-    protected void Dialog()
-    {
-        if(stateMachine.NPCInDialogWith != null && !stateMachine.NPCInDialogWith.Interact(stateMachine))
-        {
-            stateMachine.ExitDialog(); 
         }
     }
 
@@ -319,7 +275,7 @@ public class PlayerGroundedState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("GroundedState entered"); 
+        Debug.Log("GroundedState entered");
         // stateMachine.Velocity.y = Physics.gravity.y;
         stateMachine.InputReader.OnJumpPerformed += TakeOff;
     }
@@ -331,8 +287,8 @@ public class PlayerGroundedState : PlayerBaseState
             stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
         }
 
-        UnityEngine.Vector3 playerMovement = CalculateWalking(); 
-        stateMachine.Animator.SetFloat("GroundMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
+        UnityEngine.Vector3 playerMovement = CalculateWalking();
+        stateMachine.Animator.SetFloat("GroundMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z))));
         FaceMoveDirection();
         Move();
 
@@ -350,31 +306,31 @@ public class PlayerAirborneState : PlayerBaseState
 {
     public PlayerAirborneState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-        _canFlap = true; 
+        _canFlap = true;
     }
 
     public override void Enter()
     {
         stateMachine.Animator.SetTrigger("Jumped");
-        Debug.Log("Airborne State entered"); 
+        Debug.Log("Airborne State entered");
         // stateMachine.Velocity.y = Physics.gravity.y; // half gravity? in air so that the pigeon falls down slowly 
         stateMachine.InputReader.OnJumpPerformed += FlapWings;
 
-        _canFlap = true; 
+        _canFlap = true;
     }
 
     public override void Update()
     {
         ApplyGravity();
 
-        UnityEngine.Vector3 playerMovement = CalculateFlying(); 
-        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
+        UnityEngine.Vector3 playerMovement = CalculateFlying();
+        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z))));
 
 
         if (stateMachine.Controller.isGrounded)
         {
             stateMachine.Animator.SetTrigger("Landed");
-            Debug.Log("Player landed"); 
+            Debug.Log("Player landed");
             stateMachine.SwitchState(new PlayerGroundedState(stateMachine));
         }
 
@@ -386,7 +342,7 @@ public class PlayerAirborneState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log("Airbornestate exited"); 
+        Debug.Log("Airbornestate exited");
         stateMachine.InputReader.OnJumpPerformed -= FlapWings;
     }
 }
@@ -395,28 +351,28 @@ public class PlayerAirborneState : PlayerBaseState
 // Dummy State for right now
 public class StunnedState : PlayerBaseState
 {
-    Vector3 _direction;  
+    Vector3 _direction;
 
     public StunnedState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-        _direction = new Vector3(0, 0, 0); 
+        _direction = new Vector3(0, 0, 0);
     }
 
     public StunnedState(PlayerStateMachine stateMachine, Vector3 direction) : base(stateMachine)
     {
-        _direction = direction; 
+        _direction = direction;
     }
 
     public override void Enter()
     {
         Debug.Log("Entered Stunned State");
-        IEnumerator coroutine = timer(); 
-        stateMachine.StartCoroutine(coroutine); 
+        IEnumerator coroutine = timer();
+        stateMachine.StartCoroutine(coroutine);
     }
 
     public override void Update()
     {
-        ApplyGravity(); 
+        ApplyGravity();
     }
 
     public override void Exit()
@@ -428,9 +384,9 @@ public class StunnedState : PlayerBaseState
     {
         yield return new WaitForSeconds(5f);
 
-        if(stateMachine.Controller.isGrounded)
+        if (stateMachine.Controller.isGrounded)
         {
-            stateMachine.SwitchState(new PlayerGroundedState(stateMachine)); 
+            stateMachine.SwitchState(new PlayerGroundedState(stateMachine));
         }
         else
         {
@@ -438,3 +394,4 @@ public class StunnedState : PlayerBaseState
         }
     }
 }
+*/

@@ -1,3 +1,4 @@
+﻿/*
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,9 +23,9 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
     public float npcMovementSpeed;
     public List<Transform> npcMovementPoints;
 
-    public string ThankYouForLetter = "Thank you for the letter!"; 
+    public string ThankYouForLetter = "Thank you for the letter!";
     public string IHaveALetterTo = "I have a letter to give you that goes to ";
-    public string IDontHaveAnyLetters = "I dont have any letters!"; 
+    public string IDontHaveAnyLetters = "I dont have any letters!";
 
     //public Transform centrePoint; //centre of the area the agent wants to move around in
     //instead of centrePoint you can set it as the transform of the agent if you don't care about a specific area
@@ -37,7 +38,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
         // mailbox = new Mailbox();
         Name = GetComponent<CapsuleCollider>().name;
         _dialogQueue = new Queue<string>();
-        npcMovementPoints = new List<Transform>(); 
+        npcMovementPoints = new List<Transform>();
         if (!pigeonNearby && npcMovementPoints != null && npcMovementPoints.Count > 0)
         {
             npcMove(npcMovementPoints, npcMovementSpeed);
@@ -81,7 +82,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
     // all the dialog queued by the first interaction runs out 
     public bool Interact(PlayerStateMachine pigeon)
     {
-        pigeon.EnterDialog(this); 
+        pigeon.EnterDialog(this);
 
         DialogBox dialogBox = pigeon.dialogBox;
 
@@ -102,7 +103,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
         else // we have no dialog queued
         {
             Letter letter;
-            if(mailbox.GetLetter(out letter))
+            if (mailbox.GetLetter(out letter))
             {
                 // TODO: potentially get rid of the "i have a letter" bit so that its less repetitive 
                 _dialogQueue.Enqueue(IHaveALetterTo + letter.To + ".");
@@ -110,7 +111,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
                 pigeon.AddLetter(letter);
                 Debug.Log("Letter that goes to " + letter.To + " added to pigeon mailbox");
             }
-            else if(!dialogBox.dialogPanel.activeSelf)
+            else if (!dialogBox.dialogPanel.activeSelf)
             {
                 // if we dont have any available mail, we simply
                 // tell the player that
@@ -148,9 +149,9 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
             _dialogQueue.Enqueue("This isn't my letter!");
         }
 
-        
 
-        Interact(stateMachine); 
+
+        Interact(stateMachine);
 
         stateMachine.SwitchActionMap("Dialog");
         // TODO: freeze bird when talking bc it would be cool (and prevent soltlocking) 
@@ -158,7 +159,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
 
     public void Click(PlayerStateMachine stateMachine)
     {
-        Interact(stateMachine); 
+        Interact(stateMachine);
     }
 
     private void OnTriggerEnter(Collider collision)
@@ -212,4 +213,7 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
         return false;
     }
 */
+/*
 }
+
+*/

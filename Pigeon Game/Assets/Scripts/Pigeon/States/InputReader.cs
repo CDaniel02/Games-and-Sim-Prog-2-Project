@@ -2,13 +2,12 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls; 
+using UnityEngine.InputSystem.Controls;
 
-public class InputReader : MonoBehaviour // , Controls.IPlayerActions
+public class InputReader : MonoBehaviour 
 {
     public Vector2 MouseDelta;
     public Vector2 MousePosition; 
-    public Vector3 LastClickedPoint; 
     public Vector2 MoveComposite;
 
     public bool MouseDown; 
@@ -16,30 +15,16 @@ public class InputReader : MonoBehaviour // , Controls.IPlayerActions
     public Action OnJumpPerformed;
     public Action OnClickPerformed; 
     public Action OnInteractPerformed;
-    public Action OnUnlockCursorPerformed; 
-
-    //private Controls controls;
+    public Action OnUnlockCursorPerformed;
+    public Action OnDialogPerformed;
 
     private void OnEnable()
     {
         MouseDelta = new UnityEngine.Vector2(0, 0);
         MoveComposite = new UnityEngine.Vector2(0, 0);
         MousePosition = new Vector2(0, 0);
-        LastClickedPoint = new Vector3(0, 0, 0);
         MouseDown = false; 
         OnJumpPerformedClear();
-        //MouseDelta
-    //    if (controls != null)
-    //        return;
-
-    //    controls = new Controls();
-    //    controls.Player.SetCallbacks(this);
-    //    controls.Player.Enable();
-    }
-
-    public void OnDisable()
-    {
-    //    controls.Player.Disable();
     }
 
     public void OnLook(InputValue inputValue)
@@ -63,6 +48,14 @@ public class InputReader : MonoBehaviour // , Controls.IPlayerActions
             return;
 
         OnInteractPerformed?.Invoke();
+    }
+
+    public void OnDialog(InputValue inputValue)
+    {
+        if (!inputValue.isPressed)
+            return;
+
+        OnDialogPerformed?.Invoke();
     }
 
     public void OnUnlockCursor(InputValue inputValue)
@@ -89,20 +82,7 @@ public class InputReader : MonoBehaviour // , Controls.IPlayerActions
     public void OnClick(InputValue inputValue)
     {
         MouseDown = inputValue.isPressed; 
-
-        if (!inputValue.isPressed)
-            return;
-
-        LastClickedPoint = MousePosition; 
-        OnClickPerformed?.Invoke(); 
-
-        //Vector3 mousePos = Mouse.current.position.ReadValue();
-        //mousePos.z = Camera.main.nearClipPlane;
-            // Debug.Log(mousePos);
-            //Debug.Log(mousePos);
-            //Vector3 Worldpos = Camera.main.ScreenToWorldPoint(mousePos);
-            //Debug.Log(Worldpos); 
-        
+        OnClickPerformed?.Invoke();
     }
 
     private void Nothing()

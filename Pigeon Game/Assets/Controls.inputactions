@@ -877,7 +877,7 @@
             "id": "b09235af-5992-484b-99c8-dfaaff7452c0",
             "actions": [
                 {
-                    "name": "Interact",
+                    "name": "Dialog",
                     "type": "Button",
                     "id": "4e37ca01-15ee-4187-a359-dadab576e68b",
                     "expectedControlType": "Button",
@@ -894,7 +894,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Interact",
+                    "action": "Dialog",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb555512-b035-4f2b-9aa8-c499e2da764e",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dialog",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

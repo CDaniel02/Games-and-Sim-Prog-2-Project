@@ -479,6 +479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LetterPrefab: {fileID: 5360152063364625195, guid: 4ae95ce906b934bfd9948e8ed02327dc, type: 3}
+  UICamera: {fileID: 5220730875197980320}
   LetterSpeed: 10
   FirstLetterX: -550
   LetterY: -235
@@ -486,6 +487,7 @@ MonoBehaviour:
   DisplayLetterX: -255
   DisplayLetterY: 160
   DisplayLetterZ: -225
+  HoldingLetterZ: 0
   LetterDistanceApart: 220
   MaxLettersBeforeOverlap: 6
   TotalLetterDistance: 0

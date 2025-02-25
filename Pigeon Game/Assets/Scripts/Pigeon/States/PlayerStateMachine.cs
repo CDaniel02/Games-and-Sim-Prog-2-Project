@@ -22,12 +22,27 @@ public class PlayerStateMachine : StateMachine
     public CharacterController Controller { get; private set; }
     public int interactRange = 5;
     public DialogBox dialogBox;
-    public Camera UICamera; 
+    public Camera UICamera;
+    public float TimeToDragLetter = 0.1f;
+    public NPC NPCInDialogWith; 
 
     public PlayerInput playerInput;
 
-    private Dictionary<string, Letter> _letters;
-    // public Dictionary<string, Letter> Letters { get { return _letters; } set { _letters = value; } }
+    private List<Letter> _letters;
+
+    private Letter _letterHolding; 
+    public Letter LetterHolding
+    {
+        get
+        {
+            return _letterHolding; 
+        }
+        set
+        {
+            _letterHolding = value; 
+        }
+    }
+    
 
     private void Start()
     {
@@ -36,8 +51,10 @@ public class PlayerStateMachine : StateMachine
         InputReader = GetComponent<InputReader>();
         Animator = GetComponent<Animator>();
         Controller = GetComponent<CharacterController>();
+        NPCInDialogWith = null; 
 
-        _letters = new Dictionary<string, Letter>();
+        _letters = new List<Letter>(); 
+        LetterHolding = null; 
 
         Cursor.lockState = CursorLockMode.Locked; 
 
@@ -51,30 +68,79 @@ public class PlayerStateMachine : StateMachine
 
     public bool CheckAndGiveLetter(NPC npc, out Letter letter)
     {
-        bool result = false; 
+        letter = new Letter(); 
 
+        foreach(Letter currentLetter in _letters)
+        {
+            if(currentLetter.To == npc.Name)
+            {
+                letter = currentLetter; 
+            }
+        }
+
+        return RemoveLetter(letter); 
+
+        /*
+
+        if(_letters.Remove(letter))
+        {
+            result = true;
+
+            Notification notification = new("LetterRemoved", letter);
+            NotificationCenter.Instance.PostNotification(notification);
+        }
+
+        */
+
+        /*
         if(_letters.ContainsKey(npc.Name))
         {
             letter = _letters[npc.Name];
             _letters.Remove(npc.Name); 
             result = true;
 
-            Notification notification = new("LetterRemoved", letter);
-            NotificationCenter.Instance.PostNotification(notification); 
+            
         }
         else
         {
             letter = new Letter(); 
         }
+        */ 
 
-        return result; 
+    }
+
+    public bool RemoveLetter(Letter letter)
+    {
+        bool result = false;
+
+        if (_letters.Remove(letter))
+        {
+            result = true;
+
+            Notification notification = new("LetterRemoved", letter);
+            NotificationCenter.Instance.PostNotification(notification);
+        }
+
+        return result;
     }
 
     public void AddLetter(Letter letter)
     {
-        _letters[letter.To] = letter;
+        _letters.Add(letter); 
 
         Notification notification = new("LetterAdded", letter);
         NotificationCenter.Instance.PostNotification(notification);
+    }
+
+    public void EnterDialog(NPC npc)
+    {
+        NPCInDialogWith = npc;
+        SwitchActionMap("Dialog"); 
+    }
+
+    public void ExitDialog()
+    {
+        NPCInDialogWith = null;
+        SwitchActionMap("Player"); 
     }
 }

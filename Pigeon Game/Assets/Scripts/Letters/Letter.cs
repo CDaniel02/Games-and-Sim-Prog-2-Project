@@ -27,20 +27,24 @@ public class Letter
 
 	// stores LetterIds
 	private List<int> _prereqLetters;
-	public List<int> PrereqLetters
-	{
-		get
-		{
-			return _prereqLetters;
-		}
-		set
-		{
-			_prereqLetters = value; 
-		}
-	}
+	public List<int> PrereqLetters { get { return _prereqLetters; } set { _prereqLetters = value; } }
 
-	// Designated Contructor 
-	public Letter(string to, string from, string body)
+    // stores LetterIds
+    private List<int> _deliveredPrereqLetters;
+    public List<int> DeliveredPrereqLetters { get { return _deliveredPrereqLetters; }
+        set
+        {
+            _deliveredPrereqLetters = value;
+
+            foreach(int letter in _deliveredPrereqLetters)
+            {
+                NotificationCenter.Instance.AddObserver(letter + "", CheckForDeliveredPrereqLetters); 
+            }
+        }
+    }
+
+    // Designated Contructor 
+    public Letter(string to, string from, string body)
 	{
 		To = to;
 		From = from;
@@ -49,17 +53,20 @@ public class Letter
 		ToResponse = "";
 		FromResponse = "";
 		PrereqLetters = new List<int>();
+        DeliveredPrereqLetters = new List<int>(); 
 
-
-		LetterId = -1; 
+        LetterId = -1; 
 	}
 	public Letter(string to, string from) : this(to, from, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.") { }
 	public Letter() : this("NO NAME", "NO NAME") { }
 
 	// takes an incoming letter as an arguement and removes that LetterId from the prereq letters list
-	public bool ValidatePrereqs(Letter letter)
+	public bool ValidatePrereqs(int letterId)
 	{
-        PrereqLetters.Remove(letter.LetterId);
+        if(!PrereqLetters.Remove(letterId))
+        {
+            DeliveredPrereqLetters.Remove(letterId); 
+        }
 
         return ValidatePrereqs(); 
 	}
@@ -67,8 +74,13 @@ public class Letter
     // returns if this letter now has all its prereqs satisfied
     public bool ValidatePrereqs()
 	{
-		return PrereqLetters.Count <= 0; 
+		return PrereqLetters.Count + DeliveredPrereqLetters.Count <= 0; 
 	}
+
+    public void CheckForDeliveredPrereqLetters(Notification notification)
+    {
+        ValidatePrereqs(int.Parse(notification.Name)); 
+    }
 
     // get a property with a string
     // used like letterObject["From"] = "The King"

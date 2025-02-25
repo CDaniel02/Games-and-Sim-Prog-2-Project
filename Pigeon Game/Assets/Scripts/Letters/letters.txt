@@ -3,7 +3,7 @@ LetterId: 0
 To: Naked Man
 ToResponse: How DARE he say this about me?
 From: Peasant
-FromResponse: Bring this to the Naked Man at the lake post-haste
+FromResponse: Bring this to the Naked Man at the lake post-haste and i shall give you another letter once you're done
 Body: You're looking kinda naked bro
 end
 
@@ -15,4 +15,23 @@ From: Naked Man
 FromResponse: Bring this to him, he'll rue the day...
 Body: I can be naked as much as I want
 PrereqLetters: 0
+end
+
+start
+LetterId: 2
+To: Naked Man
+ToResponse: Really, another letter? this is excessive i think
+From: Peasant
+FromResponse: Ah i see you have delivered my letter, here is your next 
+Body: You're looking kinda naked bro
+DeliveredPrereqLetters: 0
+end
+
+start
+LetterId: 3
+To: Naked Man
+ToResponse: Bros kinda obsessed with me 
+From: Peasant
+FromResponse: oh and ive got this other letter
+Body: You're STILL looking kinda naked bro, get BURNED crazy style
 end
