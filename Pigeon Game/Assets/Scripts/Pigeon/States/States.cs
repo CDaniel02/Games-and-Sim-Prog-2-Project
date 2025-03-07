@@ -125,7 +125,7 @@ public abstract class PlayerBaseState : State
     protected void UnlockCurser()
     {
         stateMachine.CurserLocked = !stateMachine.CurserLocked;
-        stateMachine.CinemachineCamera.enabled = stateMachine.CurserLocked; 
+        // stateMachine.CinemachineCamera.enabled = stateMachine.CurserLocked; 
     }
 
     protected void ClickPerformed()
