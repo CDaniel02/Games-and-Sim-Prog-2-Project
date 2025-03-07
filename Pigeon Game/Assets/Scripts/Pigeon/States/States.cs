@@ -124,15 +124,8 @@ public abstract class PlayerBaseState : State
 
     protected void UnlockCurser()
     {
-        if(Cursor.lockState == CursorLockMode.None)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
-        
+        stateMachine.CurserLocked = !stateMachine.CurserLocked;
+        stateMachine.CinemachineCamera.enabled = stateMachine.CurserLocked; 
     }
 
     protected void ClickPerformed()

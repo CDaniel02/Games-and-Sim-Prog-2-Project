@@ -24,7 +24,8 @@ public class TextReader : MonoBehaviour
         // add NPCs to dictionary by NPC name
         foreach(NPC npc in npcList)
         {
-            _npcs[npc.Name] = npc; 
+            _npcs[npc.Name] = npc;
+            Debug.Log(npc.Name); 
         }
         // add all letters to their corresponding NPCs
         foreach(Letter letter in _letters)

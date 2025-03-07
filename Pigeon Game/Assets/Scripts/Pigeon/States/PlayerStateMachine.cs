@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
+using Cinemachine; 
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterController))]
@@ -30,18 +31,42 @@ public class PlayerStateMachine : StateMachine
 
     private List<Letter> _letters;
 
-    private Letter _letterHolding; 
+    private Letter _letterHolding;
     public Letter LetterHolding
     {
         get
         {
-            return _letterHolding; 
+            return _letterHolding;
         }
         set
         {
-            _letterHolding = value; 
+            _letterHolding = value;
         }
     }
+
+    private bool _curserLocked;
+    public bool CurserLocked
+    {
+        get
+        {
+            return _curserLocked; 
+        }
+        set
+        {
+            _curserLocked = value;
+
+            if (_curserLocked)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
+        }
+    }
+
+    public CinemachineFreeLook CinemachineCamera; 
     
 
     private void Start()
@@ -51,7 +76,8 @@ public class PlayerStateMachine : StateMachine
         InputReader = GetComponent<InputReader>();
         Animator = GetComponent<Animator>();
         Controller = GetComponent<CharacterController>();
-        NPCInDialogWith = null; 
+        NPCInDialogWith = null;
+        CurserLocked = true; 
 
         _letters = new List<Letter>(); 
         LetterHolding = null; 

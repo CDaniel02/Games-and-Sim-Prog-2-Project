@@ -16251,7 +16251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99fa2a098d98f846a6bfb89e6b9ce9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: The King's Assisstant
+  Name: Herold
   animator: {fileID: 7140232422878415519}
   npcSpeed: 12
   npcRotationSpeed: 10
@@ -41227,17 +41227,93 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2479292164128518486, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.20235904
+      objectReference: {fileID: 0}
+    - target: {fileID: 2479292164128518486, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.000000017534253
+      objectReference: {fileID: 0}
+    - target: {fileID: 2479292164128518486, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.000000003623173
+      objectReference: {fileID: 0}
+    - target: {fileID: 3774712617951684248, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_FollowOffset.y
+      value: 15.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3774712617951684248, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_FollowOffset.z
+      value: -30.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3938559223543820281, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_FollowOffset.y
+      value: 15.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3938559223543820281, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_FollowOffset.z
+      value: -30.7
+      objectReference: {fileID: 0}
     - target: {fileID: 5821661906088203119, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
       propertyPath: m_Name
       value: Pigeon and UI Stuffs
       objectReference: {fileID: 0}
+    - target: {fileID: 6026267653516023488, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_Transitions.m_OnCameraLive.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6026267653516023488, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_Transitions.m_OnCameraLive.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6026267653516023488, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_Transitions.m_OnCameraLive.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8873646178072657783, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8873646178072657783, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8873646178072657783, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99908626
+      value: 0.97546864
       objectReference: {fileID: 0}
     - target: {fileID: 8873646178072657783, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.042739626
+      value: 0.22013873
+      objectReference: {fileID: 0}
+    - target: {fileID: 8873646178072657783, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8873646178072657783, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142628576351693381, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_FollowOffset.y
+      value: 15.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142628576351693381, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_FollowOffset.z
+      value: -30.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150889541913176441, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.18455961
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150889541913176441, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -8.087083e-10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9150889541913176441, guid: 206e37d40417e42389d4a6a8e03ba126, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 1.5186383e-10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -41279,7 +41355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99fa2a098d98f846a6bfb89e6b9ce9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Female Peasant 2
+  Name: Agatha
   animator: {fileID: 4849197258584608407}
   npcSpeed: 0
   npcRotationSpeed: 0
@@ -56538,7 +56614,7 @@ GameObject:
   - component: {fileID: 1771951561}
   - component: {fileID: 1771951562}
   m_Layer: 0
-  m_Name: Female Peasant 2
+  m_Name: Agatha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61840,7 +61916,7 @@ GameObject:
   - component: {fileID: 6485078937885363644}
   - component: {fileID: 751785927}
   m_Layer: 0
-  m_Name: The King's Assisstant
+  m_Name: Herold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
