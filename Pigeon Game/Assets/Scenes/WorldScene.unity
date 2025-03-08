@@ -522,31 +522,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9fe979b579e17fe4ca878e23253bc3fb, type: 3}
---- !u!1 &11049239 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2286857282140687194, guid: e0efd7760b38eda4d825bb5e0407325d, type: 3}
-  m_PrefabInstance: {fileID: 95530623}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &11049240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 11049239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01f325f40b7bf26459887af3c8ea76ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverSpeed: 0.3
-  pursuitSpeed: 0.1
-  retreatSpeed: 0.07
-  radius: 80
-  detectedable: 30
-  pigeon: {fileID: 297118175542283876}
-  pursuitTime: 20
-  bufferTime: 10
 --- !u!1 &12498042
 GameObject:
   m_ObjectHideFlags: 0
@@ -2867,14 +2842,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Low Poly Faclon
       objectReference: {fileID: 0}
+    - target: {fileID: 4660977428693420502, guid: e0efd7760b38eda4d825bb5e0407325d, type: 3}
+      propertyPath: pigeon
+      value: 
+      objectReference: {fileID: 297118175542283876}
     m_RemovedComponents:
     - {fileID: 1832305100238471788, guid: e0efd7760b38eda4d825bb5e0407325d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2286857282140687194, guid: e0efd7760b38eda4d825bb5e0407325d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 11049240}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0efd7760b38eda4d825bb5e0407325d, type: 3}
 --- !u!1001 &96276634
 PrefabInstance:

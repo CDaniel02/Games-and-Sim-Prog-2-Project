@@ -305,9 +305,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2219684277190569990}
   - component: {fileID: 888715805027014811}
-  - component: {fileID: 1832305100238471788}
   - component: {fileID: 9077150862525425273}
   - component: {fileID: 3013666329410264187}
+  - component: {fileID: 4660977428693420502}
   m_Layer: 0
   m_Name: Low Poly Faclon
   m_TagString: Untagged
@@ -353,26 +353,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1832305100238471788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2286857282140687194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4866e9030a3d8249b8780bae34a183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverSpeed: 0.3
-  pursuitSpeed: 0.1
-  retreatSpeed: 0.07
-  radius: 50
-  detectedable: 30
-  pigeon: {fileID: 0}
-  pursuitTime: 20
-  bufferTime: 10
 --- !u!136 &9077150862525425273
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -423,6 +403,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &4660977428693420502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2286857282140687194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f325f40b7bf26459887af3c8ea76ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverSpeed: 0.3
+  pursuitSpeed: 0.1
+  retreatSpeed: 0.07
+  radius: 50
+  detectedable: 30
+  pigeon: {fileID: 0}
+  pursuitTime: 20
+  bufferTime: 10
 --- !u!1 &2523975977075010855
 GameObject:
   m_ObjectHideFlags: 0

@@ -148,12 +148,11 @@ public class Falcon : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("There has been a collision! Uh oh.");
-        if(collision.gameObject.name == "Pigeon")
+        if(collision.gameObject.name == "Pigeon 1")
         {
             //calculate vector3 for pigeon to get sent in, draw a line between the two!
             Vector3 knockBack = (collision.transform.position - transform.position).normalized;
             knockBack.y = -0.5f;
-
 
             playerStateMachine = collision.gameObject.GetComponent<PlayerStateMachine>();
             playerStateMachine.SwitchState(new StunnedState(playerStateMachine, knockBack));
