@@ -250,7 +250,11 @@ public class PlayerAirborneState : PlayerBaseState
 // Dummy State for right now
 public class StunnedState : PlayerBaseState
 {
-    Vector3 _direction;  
+    Vector3 _direction;
+    private float stunDuration = 5f;
+    private float knockbackStrength = 10f;
+    private float elapsedTime = 0f;
+    private float gravity = -9.81f;
 
     public StunnedState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -265,13 +269,34 @@ public class StunnedState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered Stunned State");
-        IEnumerator coroutine = timer(); 
-        stateMachine.StartCoroutine(coroutine); 
+        //IEnumerator coroutine = timer(); 
+        //stateMachine.StartCoroutine(coroutine); 
     }
 
     public override void Update()
     {
-        ApplyGravity(); 
+        //ApplyGravity();
+
+        if (elapsedTime < stunDuration)
+        {
+            Vector3 knockback = _direction * knockbackStrength;
+            knockback.y += gravity * Time.deltaTime;
+            stateMachine.Controller.Move(knockback * Time.deltaTime);
+
+            elapsedTime += Time.deltaTime;
+        }
+        else
+        {
+            //switch state after stun ends
+            if (stateMachine.Controller.isGrounded)
+            {
+                stateMachine.SwitchState(new PlayerGroundedState(stateMachine));
+            }
+            else
+            {
+                stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
+            }
+        }
     }
 
     public override void Exit()
@@ -279,7 +304,7 @@ public class StunnedState : PlayerBaseState
         Debug.Log("Exited Stunned State");
     }
 
-    public IEnumerator timer()
+    /**public IEnumerator timer()
     {
         yield return new WaitForSeconds(5f);
 
@@ -291,5 +316,5 @@ public class StunnedState : PlayerBaseState
         {
             stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
         }
-    }
+    }*/
 }
