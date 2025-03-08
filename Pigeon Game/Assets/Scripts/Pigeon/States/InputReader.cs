@@ -39,6 +39,7 @@ public class InputReader : MonoBehaviour
 
     public void OnMouse(InputValue inputValue)
     {
+        Cursor.visible = true;
         MousePosition = inputValue.Get<Vector2>();
     }
 
