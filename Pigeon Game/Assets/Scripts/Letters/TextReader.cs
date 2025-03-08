@@ -24,15 +24,19 @@ public class TextReader : MonoBehaviour
         // add NPCs to dictionary by NPC name
         foreach(NPC npc in npcList)
         {
-            _npcs[npc.Name] = npc; 
+            _npcs[npc.Name] = npc;
+            Debug.Log(npc.Name); 
         }
         // add all letters to their corresponding NPCs
         foreach(Letter letter in _letters)
         {
             if (_npcs.ContainsKey(letter.From))
             {
-                _npcs[letter.From].mailbox.AddOutgoingMail(letter);
-                Debug.Log("Added letter to " + letter.From + " that goes to " + letter.To + "."); 
+                Debug.Log("Letter added to " + letter.From);
+                NPC npc = _npcs[letter.From];
+                Mailbox mailbox = npc.mailbox;
+                mailbox.AddOutgoingMail(letter); 
+                // _npcs[letter.From].mailbox.AddOutgoingMail(letter);
             }
 
         }
@@ -78,7 +82,17 @@ public class TextReader : MonoBehaviour
                             }
 
                             currentLetter.PrereqLetters = letterIndexes; 
-                            
+                        } // same for the deliveredprereqletters 
+                        else if(property == "DeliveredPrereqLetters")
+                        {
+                            string[] indexesAsStrings = value.Split(", ");
+                            List<int> letterIndexes = new List<int>();
+                            foreach (string letterIndex in indexesAsStrings)
+                            {
+                                letterIndexes.Add(int.Parse(letterIndex));
+                            }
+
+                            currentLetter.DeliveredPrereqLetters = letterIndexes;
                         }
                         else
                         {

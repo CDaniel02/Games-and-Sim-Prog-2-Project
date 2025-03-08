@@ -39,13 +39,13 @@ public class Mailbox
 	{
 		foreach(Letter letter in _outgoingMailbox)
 		{
-			letter.ValidatePrereqs(givenLetter);
+			letter.ValidatePrereqs(givenLetter.LetterId);
 		}
 	}
 
     // retrieves all mail available to be sent out and deletes from the mailbox
 	// essentially GIVES OUT avaiable mail
-    public List<Letter> RemoveOutgoingMail()
+    public List<Letter> GetOutgoingMail()
 	{
 		List<Letter> toReturn = new List<Letter>();
 
@@ -57,8 +57,26 @@ public class Mailbox
             }
         }
 
-        foreach (Letter letter in toReturn) _outgoingMailbox.Remove(letter);
+        // foreach (Letter letter in toReturn) _outgoingMailbox.Remove(letter);
         return toReturn;
     }
+
+	public bool GetLetter(out Letter letter)
+	{
+		bool result = false;
+		letter = new Letter(); 
+
+		List<Letter> list = GetOutgoingMail();
+
+		if (list.Count > 0)
+		{
+			result = true;
+			letter = list[0];
+			_outgoingMailbox.Remove(letter); 
+		}
+
+		return result;
+	}
+
 }
 

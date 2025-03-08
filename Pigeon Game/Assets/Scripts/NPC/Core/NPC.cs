@@ -1,26 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Experimental.GlobalIllumination;
 
-public class NPC : MonoBehaviour
+
+public class NPC : MonoBehaviour, ITakesLetters, IClickable
 {
     // name field that gets pulled from the hierarchuy
     public string Name;
 
     // mailbox holds outgoing and incoming mail
-    public Mailbox mailbox;
+    public Mailbox mailbox = new Mailbox();
     private Queue<string> _dialogQueue;
 
-    private bool pigeonNearby = false;
+    
     //public NavMeshAgent agent;
     //public float range; //radius of sphere
     public Animator animator;
+    private bool pigeonNearby;
 
-    [Header("Reference to NPC Movement Attributes")]
-    public float npcMovementSpeed;
-    public List<Transform> npcMovementPoints;
+    [Header("Reference to NPC Patrol Movement Attributes")]
+    public float npcSpeed;
+    public float npcRotationSpeed;
+    public int targetPoint;
+    public bool isLoop;
+    public List<Transform> patrolPoints;
 
     public string ThankYouForLetter = "Thank you for the letter!"; 
     public string IHaveALetterTo = "I have a letter to give you that goes to ";
@@ -29,45 +32,64 @@ public class NPC : MonoBehaviour
     //public Transform centrePoint; //centre of the area the agent wants to move around in
     //instead of centrePoint you can set it as the transform of the agent if you don't care about a specific area
 
-    private void Start()
+    private void Awake()
     {
         //agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        animator.SetBool("idle", true);
-        mailbox = new Mailbox();
-        Name = GetComponent<CapsuleCollider>().name;
+        Name = gameObject.name;
         _dialogQueue = new Queue<string>();
-        if (!pigeonNearby && npcMovementPoints != null)
+        
+        StartMoving();
+    }
+
+    public void StartMoving()
+    {
+        targetPoint = 0;
+        pigeonNearby = false;
+    }
+    private void Update()
+    {
+        if (pigeonNearby)
         {
-            npcMove(npcMovementPoints, npcMovementSpeed);
+            return;
+        }
+        if(targetPoint < patrolPoints.Count)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, patrolPoints[targetPoint].position, npcSpeed * Time.deltaTime);
+            Vector3 direction = -(transform.position - patrolPoints[targetPoint].position);
+            //Debug.Log("the direction is" + direction);
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, npcRotationSpeed * Time.deltaTime);
+            float distance = Vector3.Distance(transform.position, patrolPoints[targetPoint].position);
+            if (distance <= 0.05f)
+            {
+                targetPoint++;
+                if(isLoop && targetPoint >= patrolPoints.Count)
+                {
+                    targetPoint = 0;
+                }
+            }
+        }
+
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            Debug.Log("Pigeon is nearby I cant move");
+            pigeonNearby = true;
+            animator.SetBool("pigeonNearby", true);
         }
     }
 
-    private void Update()
+    private void OnTriggerExit(Collider collision)
     {
-
-
-    }
-
-    public void npcMove(List<Transform> pointList, float speed)
-    {
-        bool endOfRoute = false;
-        int waypointIndex = 0;
-        while (!endOfRoute)
+        if (collision.CompareTag("Player"))
         {
-            transform.position = Vector3.MoveTowards(
-            transform.position,
-            pointList[waypointIndex].position,
-            speed * Time.deltaTime);
-
-            if (Vector3.Distance(transform.position, pointList[waypointIndex].position) < 0.1f)
-            {
-                waypointIndex++;
-                if (waypointIndex == pointList.Count - 1)
-                {
-                    endOfRoute = true;
-                }
-            }
+            Debug.Log("Pigeon is gone I can move");
+            pigeonNearby = false;
+            animator.SetBool("pigeonNearby", false);
         }
     }
 
@@ -80,6 +102,8 @@ public class NPC : MonoBehaviour
     // all the dialog queued by the first interaction runs out 
     public bool Interact(PlayerStateMachine pigeon)
     {
+        pigeon.EnterDialog(this); 
+
         DialogBox dialogBox = pigeon.dialogBox;
 
         // we have already queued dialog
@@ -98,43 +122,26 @@ public class NPC : MonoBehaviour
         }
         else // we have no dialog queued
         {
-            Letter letterToReceive;
-
-            // if the player has a letter, we will thank them and give out
-            // the ToReponse 
-            if (pigeon.CheckAndGiveLetter(this, out letterToReceive))
+            Letter letter;
+            if(mailbox.GetLetter(out letter))
             {
-                mailbox.AddIncomingMail(letterToReceive);
-                _dialogQueue.Enqueue(ThankYouForLetter);
-                _dialogQueue.Enqueue(letterToReceive.ToResponse);
+                // TODO: potentially get rid of the "i have a letter" bit so that its less repetitive 
+                _dialogQueue.Enqueue(IHaveALetterTo + letter.To + ".");
+                _dialogQueue.Enqueue(letter.FromResponse);
+                pigeon.AddLetter(letter);
+                Debug.Log("Letter that goes to " + letter.To + " added to pigeon mailbox");
             }
-
-            // retreive all mail that might be given out
-            // this is mail that has already validated all prereqs
-            List<Letter> outgoingMail = mailbox.RemoveOutgoingMail();
-            if (outgoingMail.Count > 0)
-            {
-                // if we have it we cycle through all avaiable letters
-                // queueing up dialog for each
-                // and then give the letter to the player 
-                foreach (Letter letter in outgoingMail)
-                {
-                    _dialogQueue.Enqueue(IHaveALetterTo + letter.To + ".");
-                    _dialogQueue.Enqueue(letter.FromResponse);
-                    _dialogQueue.Enqueue("*coo! I now have the letter that goes to " + letter.To + "*");
-                    pigeon.Letters[letter.To] = letter;
-                    Debug.Log("Letter that goes to " + letter.To + " added to pigeon mailbox"); 
-                }
-            }
-            else
+            else if(!dialogBox.dialogPanel.activeSelf)
             {
                 // if we dont have any available mail, we simply
                 // tell the player that
                 _dialogQueue.Enqueue(IDontHaveAnyLetters);
             }
-
-            // after everything, we should be done with dialog, and let the queue know that
-            _dialogQueue.Enqueue("end");
+            else
+            {
+                // after everything, we should be done with dialog, and let the queue know that
+                _dialogQueue.Enqueue("end");
+            }
 
             // run this function recursively to trigger the dialog to show
             Interact(pigeon);
@@ -143,25 +150,38 @@ public class NPC : MonoBehaviour
         return dialogBox.dialogPanel.activeInHierarchy;
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void TakeLetter(PlayerStateMachine stateMachine)
     {
-        if (collision.CompareTag("Player"))
+        if (stateMachine.LetterHolding.To == gameObject.name)
         {
-            Debug.Log("Pigeon is nearby I cant move");
-            pigeonNearby = true;
-            animator.SetBool("idle", false);
+            mailbox.AddIncomingMail(stateMachine.LetterHolding);
+            _dialogQueue.Enqueue(ThankYouForLetter);
+            _dialogQueue.Enqueue(stateMachine.LetterHolding.ToResponse);
+
+            stateMachine.RemoveLetter(stateMachine.LetterHolding);
+
+            Notification notification = new(stateMachine.LetterHolding.LetterId + "", stateMachine.LetterHolding);
+            NotificationCenter.Instance.PostNotification(notification);
         }
+        else
+        {
+            // something about either excepting it or not
+            _dialogQueue.Enqueue("This isn't my letter!");
+        }
+
+        
+
+        Interact(stateMachine); 
+
+        stateMachine.SwitchActionMap("Dialog");
+        // TODO: freeze bird when talking bc it would be cool (and prevent soltlocking) 
     }
 
-    private void OnTriggerExit(Collider collision)
+    public void Click(PlayerStateMachine stateMachine)
     {
-        if (collision.CompareTag("Player"))
-        {
-            Debug.Log("Pigeon is gone I can move");
-            pigeonNearby = false;
-            animator.SetBool("idle", true);
-        }
+        Interact(stateMachine); 
     }
+
     /*
     public void Move()
     {

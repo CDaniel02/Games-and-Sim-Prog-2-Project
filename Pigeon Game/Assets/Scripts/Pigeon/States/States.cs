@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -27,7 +28,9 @@ public abstract class PlayerBaseState : State
 
         _canFlap = true; 
 
-        stateMachine.InputReader.OnInteractPerformed = Interact; 
+        stateMachine.InputReader.OnUnlockCursorPerformed = UnlockCurser;
+        stateMachine.InputReader.OnClickPerformed = ClickPerformed;
+        stateMachine.InputReader.OnDialogPerformed = Dialog;
     }
 
     protected UnityEngine.Vector3 CalculateMoveDirection()
@@ -119,24 +122,155 @@ public abstract class PlayerBaseState : State
         stateMachine.Controller.Move(stateMachine.Velocity * Time.deltaTime);
     }
 
-    protected void Interact()
+    protected void UnlockCurser()
     {
-        Collider[] colliderArray = Physics.OverlapSphere(stateMachine.gameObject.transform.position, stateMachine.interactRange);
-        foreach (Collider collider in colliderArray)
+        stateMachine.CurserLocked = !stateMachine.CurserLocked;
+        // stateMachine.CinemachineCamera.enabled = stateMachine.CurserLocked; 
+    }
+
+    protected void ClickPerformed()
+    {
+        if(stateMachine.InputReader.MouseDown)
         {
-            if (collider.TryGetComponent(out NPC npc))
+            IEnumerator drag = CheckIfDrag(); 
+            stateMachine.StartCoroutine(drag);
+        }
+        else
+        {
+            ClickRelease(); 
+        }
+
+        /*
+        if (stateMachine.InputReader.MouseDown)
+        {
+            LayerMask layerMask = stateMachine.UICamera.cullingMask;
+
+            Vector3 mousePos = stateMachine.InputReader.MousePosition;
+            Ray ray = stateMachine.UICamera.ScreenPointToRay(mousePos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
-                bool active = npc.Interact(stateMachine);
-                if (active)
-                {
-                    stateMachine.SwitchActionMap("Dialog");
-                    // TODO: freeze bird when talking bc it would be cool (and prevent soltlocking) 
-                }
-                else
-                {
-                    stateMachine.SwitchActionMap("Player");
-                }
+                GameObject letter = hit.collider.gameObject;
+                Debug.Log("Hit " + letter.name + "!");
+
+                IEnumerator drag = Drag(letter);
+                stateMachine.StartCoroutine(drag);
             }
+        }
+        else
+        {
+            if(stateMachine.LetterHolding != null)
+            {
+                DragAndDropInteract(); 
+            }
+
+            Notification notification = new("ClickStopped", stateMachine.InputReader);
+            NotificationCenter.Instance.PostNotification(notification);
+        }
+        */
+    }
+
+    protected IEnumerator CheckIfDrag()
+    {
+        yield return new WaitForSeconds(stateMachine.TimeToDragLetter);
+
+        if(stateMachine.InputReader.MouseDown)
+        {
+            Drag(); 
+        }
+        else
+        {
+            Click(); 
+        }
+    }
+
+    protected GameObject FindObjectWhereMouseIs()
+    {
+        GameObject objectHit = null;
+
+        LayerMask layerMask = stateMachine.UICamera.cullingMask;
+        Vector3 mousePos = stateMachine.InputReader.MousePosition;
+        Ray ray = stateMachine.UICamera.ScreenPointToRay(mousePos);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) // TODO: help performance with removing infinity
+        {
+            objectHit = hit.collider.gameObject;
+            Debug.Log("Hit " + objectHit.name + "!");
+        }
+        else
+        {
+            LayerMask mainCamLayerMask = Camera.main.cullingMask;
+            Ray mainCamRay = Camera.main.ScreenPointToRay(mousePos);
+            if (Physics.Raycast(mainCamRay, out hit, Mathf.Infinity, mainCamLayerMask)) // TODO: limit how far away you can click something 
+            {
+                objectHit = hit.collider.gameObject;
+                Debug.Log("Hit " + objectHit.name + "!");
+            }
+        }
+
+        return objectHit; 
+    }
+
+    protected void Click()
+    {
+        GameObject objectHit = FindObjectWhereMouseIs(); 
+
+        if(objectHit != null && objectHit.TryGetComponent(out IClickable component))
+        {
+            component.Click(stateMachine);
+
+            Notification notification = new("Clicked", component);
+            notification.UserInfo["InputReader"] = stateMachine.InputReader;
+            NotificationCenter.Instance.PostNotification(notification);
+        }
+        else
+        {
+            Debug.Log("object was not clickable"); 
+        }
+    }
+
+    protected void Drag()
+    {
+        GameObject objectHit = FindObjectWhereMouseIs();
+
+        if (objectHit != null && objectHit.TryGetComponent(out IDragable component))
+        {
+            component.Drag(stateMachine);
+
+            Notification notification = new("Drag", component);
+            notification.UserInfo["InputReader"] = stateMachine.InputReader;
+            NotificationCenter.Instance.PostNotification(notification);
+        }
+        else
+        {
+            Debug.Log("object was not dragable");
+            Click(); 
+        }
+    }
+
+    protected void ClickRelease()
+    {
+        if(stateMachine.LetterHolding != null)
+        {
+            GameObject objectHit = FindObjectWhereMouseIs();
+
+            if(objectHit != null && objectHit.TryGetComponent(out ITakesLetters component)) 
+            {
+                component.TakeLetter(stateMachine);
+            }
+
+            stateMachine.LetterHolding = null; 
+        }
+
+        Notification notification = new("ClickStopped", stateMachine.InputReader);
+        NotificationCenter.Instance.PostNotification(notification);
+    }
+
+    protected void Dialog()
+    {
+        if(stateMachine.NPCInDialogWith != null && !stateMachine.NPCInDialogWith.Interact(stateMachine))
+        {
+            stateMachine.ExitDialog(); 
         }
     }
 
@@ -145,7 +279,6 @@ public abstract class PlayerBaseState : State
         if (_canFlap)
         {
             stateMachine.Animator.SetTrigger("Jumped");
-            Debug.Log("Flapping wings");
             stateMachine.Velocity.y += stateMachine.FlapForce;
 
             _canFlap = false;
@@ -153,7 +286,12 @@ public abstract class PlayerBaseState : State
             IEnumerator validateFlapCoroutine = ValidateFlap();
             stateMachine.StartCoroutine(validateFlapCoroutine);
         }
+    }
 
+    protected void TakeOff()
+    {
+        stateMachine.Animator.SetTrigger("Jumped");
+        stateMachine.Velocity.y += stateMachine.FlapForce * stateMachine.TakeOffMultiplier;
     }
 
     private IEnumerator ValidateFlap()
@@ -176,7 +314,7 @@ public class PlayerGroundedState : PlayerBaseState
     {
         Debug.Log("GroundedState entered"); 
         // stateMachine.Velocity.y = Physics.gravity.y;
-        stateMachine.InputReader.OnJumpPerformed += FlapWings;
+        stateMachine.InputReader.OnJumpPerformed += TakeOff;
     }
 
     public override void Update()
@@ -250,11 +388,7 @@ public class PlayerAirborneState : PlayerBaseState
 // Dummy State for right now
 public class StunnedState : PlayerBaseState
 {
-    Vector3 _direction;
-    private float stunDuration = 5f;
-    private float knockbackStrength = 10f;
-    private float elapsedTime = 0f;
-    private float gravity = -9.81f;
+    Vector3 _direction;  
 
     public StunnedState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -269,34 +403,13 @@ public class StunnedState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered Stunned State");
-        //IEnumerator coroutine = timer(); 
-        //stateMachine.StartCoroutine(coroutine); 
+        IEnumerator coroutine = timer(); 
+        stateMachine.StartCoroutine(coroutine); 
     }
 
     public override void Update()
     {
-        //ApplyGravity();
-
-        if (elapsedTime < stunDuration)
-        {
-            Vector3 knockback = _direction * knockbackStrength;
-            knockback.y += gravity * Time.deltaTime;
-            stateMachine.Controller.Move(knockback * Time.deltaTime);
-
-            elapsedTime += Time.deltaTime;
-        }
-        else
-        {
-            //switch state after stun ends
-            if (stateMachine.Controller.isGrounded)
-            {
-                stateMachine.SwitchState(new PlayerGroundedState(stateMachine));
-            }
-            else
-            {
-                stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
-            }
-        }
+        ApplyGravity(); 
     }
 
     public override void Exit()
@@ -304,7 +417,7 @@ public class StunnedState : PlayerBaseState
         Debug.Log("Exited Stunned State");
     }
 
-    /**public IEnumerator timer()
+    public IEnumerator timer()
     {
         yield return new WaitForSeconds(5f);
 
@@ -316,5 +429,5 @@ public class StunnedState : PlayerBaseState
         {
             stateMachine.SwitchState(new PlayerAirborneState(stateMachine));
         }
-    }*/
+    }
 }

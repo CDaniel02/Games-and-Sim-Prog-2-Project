@@ -2,36 +2,29 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls; 
+using UnityEngine.InputSystem.Controls;
 
-public class InputReader : MonoBehaviour // , Controls.IPlayerActions
+public class InputReader : MonoBehaviour 
 {
     public Vector2 MouseDelta;
+    public Vector2 MousePosition; 
     public Vector2 MoveComposite;
 
+    public bool MouseDown; 
+
     public Action OnJumpPerformed;
-
-    public Action OnInteractPerformed; 
-
-    //private Controls controls;
+    public Action OnClickPerformed; 
+    public Action OnInteractPerformed;
+    public Action OnUnlockCursorPerformed;
+    public Action OnDialogPerformed;
 
     private void OnEnable()
     {
         MouseDelta = new UnityEngine.Vector2(0, 0);
         MoveComposite = new UnityEngine.Vector2(0, 0);
+        MousePosition = new Vector2(0, 0);
+        MouseDown = false; 
         OnJumpPerformedClear();
-        //MouseDelta
-    //    if (controls != null)
-    //        return;
-
-    //    controls = new Controls();
-    //    controls.Player.SetCallbacks(this);
-    //    controls.Player.Enable();
-    }
-
-    public void OnDisable()
-    {
-    //    controls.Player.Disable();
     }
 
     public void OnLook(InputValue inputValue)
@@ -44,12 +37,33 @@ public class InputReader : MonoBehaviour // , Controls.IPlayerActions
         MoveComposite = inputValue.Get<UnityEngine.Vector2>();
     }
 
+    public void OnMouse(InputValue inputValue)
+    {
+        MousePosition = inputValue.Get<Vector2>();
+    }
+
     public void OnInteract(InputValue inputValue)
     {
         if (!inputValue.isPressed)
             return;
 
         OnInteractPerformed?.Invoke();
+    }
+
+    public void OnDialog(InputValue inputValue)
+    {
+        if (!inputValue.isPressed)
+            return;
+
+        OnDialogPerformed?.Invoke();
+    }
+
+    public void OnUnlockCursor(InputValue inputValue)
+    {
+        if (!inputValue.isPressed)
+            return;
+
+        OnUnlockCursorPerformed?.Invoke();
     }
 
     public void OnJump(InputValue inputValue)
@@ -63,6 +77,12 @@ public class InputReader : MonoBehaviour // , Controls.IPlayerActions
     public void OnJumpPerformedClear()
     {
         OnJumpPerformed = Nothing; 
+    }
+
+    public void OnClick(InputValue inputValue)
+    {
+        MouseDown = inputValue.isPressed; 
+        OnClickPerformed?.Invoke();
     }
 
     private void Nothing()

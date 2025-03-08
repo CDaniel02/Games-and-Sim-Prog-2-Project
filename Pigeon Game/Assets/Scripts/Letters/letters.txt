@@ -3,7 +3,7 @@ LetterId: 0
 To: Naked Man
 ToResponse: How DARE he say this about me?
 From: Peasant
-FromResponse: Bring this to the Naked Man at the lake post-haste
+FromResponse: Bring this to the Naked Man at the lake post-haste and i shall give you another letter once you're done
 Body: You're looking kinda naked bro
 end
 
@@ -15,4 +15,42 @@ From: Naked Man
 FromResponse: Bring this to him, he'll rue the day...
 Body: I can be naked as much as I want
 PrereqLetters: 0
+end
+
+start
+LetterId: 2
+To: Naked Man
+ToResponse: Really, another letter? this is excessive i think
+From: Peasant
+FromResponse: Ah i see you have delivered my letter, here is your next 
+Body: You're looking kinda naked bro
+DeliveredPrereqLetters: 0
+end
+
+start
+LetterId: 3
+To: Naked Man
+ToResponse: Bros kinda obsessed with me 
+From: Peasant
+FromResponse: oh and ive got this other letter
+Body: You're STILL looking kinda naked bro, get BURNED crazy style
+end
+
+start
+LetterId: 5
+To: Agatha
+ToResponse: Oh goodness, I have no fish! What does this mean?!? Oh well, you see pigeon...when you live alone you forget to wash. The king sure loves the way I smell though. 
+From: Herold
+FromResponse: Give this to Agatha, the lonely hag 
+Body: I was patroling the kingdom last night and passed by your house. It reeked of fish, please clean up after yourself.
+end
+
+start
+LetterId: 6
+To: Herold
+ToResponse: Well, pigeon...it was her that smelled of fish, not her house. Sorry to make you smell that. 
+From: Agatha
+FromResponse: Give this back to that nosy gaurd.
+Body: I have nothing to clean, expect myself. Please excuse my womenly smells. Thank you, good sir.
+PrereqLetters: 5
 end
