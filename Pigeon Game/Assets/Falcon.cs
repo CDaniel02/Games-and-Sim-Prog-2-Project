@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Falcon : MonoBehaviour
 {
@@ -23,6 +24,12 @@ public class Falcon : MonoBehaviour
     private float pursuitTimer; //tracks pursuit time
     public float pursuitTime = 20f; //time pursuit lasts for
 
+    private float bufferTimer;
+    public float bufferTime = 10f;
+    private bool buffering;
+
+    private PlayerStateMachine playerStateMachine;
+
     void Start()
     {
         angle = 0f;
@@ -30,16 +37,26 @@ public class Falcon : MonoBehaviour
         pigeonSpotted = false;
         retreating = false;
         pursuitTimer = 0f;
+        bufferTimer = 0f;
+        buffering = false;
     }
 
     void Update()
     {
-        if(!retreating)
+        if (!retreating)
         {
-            if (!pigeonSpotted)
+            if (buffering)
             {
                 Hover();
-
+                bufferTimer += Time.deltaTime;
+                if (bufferTime < bufferTimer)
+                {
+                    EndBuffer();
+                }
+            }
+            else if (!pigeonSpotted)
+            {
+                Hover();
                 if (Vector3.Distance(transform.position, pigeon.position) <= detectedable)
                 {
                     pigeonSpotted = true;
@@ -51,19 +68,11 @@ public class Falcon : MonoBehaviour
                 Pursue();
                 pursuitTimer += Time.deltaTime;
 
-                //if collision, endpursuit and send pigeon into stunned mode
-
-                //calculate vector3 for pigeon to get sent in, draw a line between the two!
-                //PlayerStateMachine.SwitchState(new StunnedState(Playerstatemachine));
-
-
-
                 if (pursuitTime < pursuitTimer)
                 {
+                    Debug.Log("You were too quick! The Falcon, exhausted from a failed hunt, retreats...");
                     EndPursuit();
                 }
-
-                
             }
         }
         else
@@ -79,39 +88,75 @@ public class Falcon : MonoBehaviour
 
         //update position
         orbitPosition = new Vector3((center.x + Mathf.Cos(angle) * radius), transform.position.y, (center.z + Mathf.Sin(angle) * radius));
+
+        //rotate to face orbit direction
+        Vector3 moveDirection = (orbitPosition - transform.position).normalized;
+        if (moveDirection.magnitude > 0.01f)
+        {
+            transform.forward = moveDirection; //rotates to face direction
+        }
+
         transform.position = orbitPosition;
     }
-
     void Pursue()
     {
+        Vector3 moveDirection = (pigeon.position - transform.position).normalized;
+
+        //rotate to face pigeon
+        if (moveDirection.magnitude > 0.01f)
+        {
+            transform.forward = moveDirection;
+        }
+
         transform.position = Vector3.MoveTowards(transform.position, pigeon.position, pursuitSpeed);
-        Debug.Log("The falcon is after you!");
+        //Debug.Log("The falcon is after you!");
+    }
+
+    void Retreat()
+    {
+        Vector3 moveDirection = (orbitPosition - transform.position).normalized;
+
+        //rotate to face home
+        if (moveDirection.magnitude > 0.01f)
+        {
+            transform.forward = moveDirection;
+        }
+
+        transform.position = Vector3.MoveTowards(transform.position, orbitPosition, retreatSpeed);
+        if (Vector3.Distance(transform.position, orbitPosition) < 0.1f)
+        {
+            retreating = false;
+            buffering = true;
+            Debug.Log("The falcon has returned home.");
+        }
     }
 
     void EndPursuit()
     {
-        Debug.Log("You were too quick! The Falcon, exhausted from a failed hunt, retreats...");
+        Debug.Log("Pursuit terminating.");
         pursuitTimer = 0f;
         retreating = true;
         pigeonSpotted = false;
     }
 
-    void Retreat()
+    void EndBuffer()
     {
-        transform.position = Vector3.MoveTowards(transform.position, orbitPosition, retreatSpeed);
-        if (Vector3.Distance(transform.position, orbitPosition) < 0.1f)
-        {
-            retreating = false;
-            Debug.Log("The falcon has returned home.");
-        }
+        bufferTimer = 0f;
+        buffering = false;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("There has been a collision! Uh oh."); //why isn't this working?!
-        if(collision.otherCollider.gameObject == pigeon || collision.collider.gameObject == pigeon)
+        Debug.Log("There has been a collision! Uh oh.");
+        if(collision.gameObject.name == "Pigeon")
         {
-            //pigeon.fall();
+            //calculate vector3 for pigeon to get sent in, draw a line between the two!
+            Vector3 knockBack = (collision.transform.position - transform.position).normalized;
+            knockBack.y = -0.5f;
+
+
+            playerStateMachine = collision.gameObject.GetComponent<PlayerStateMachine>();
+            playerStateMachine.SwitchState(new StunnedState(playerStateMachine, knockBack));
             Debug.Log("Got you! Haha.");
             EndPursuit();
         }
