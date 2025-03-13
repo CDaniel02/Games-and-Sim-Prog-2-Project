@@ -113,7 +113,7 @@ public class TextReader : MonoBehaviour
                     }
                     catch (Exception e)
                     {
-
+                        Debug.Log(e);
                     }
                 }
             }
