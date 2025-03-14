@@ -5,8 +5,8 @@ using System.IO;
 
 public class TextReader : MonoBehaviour
 {
-    //private string _filepath = "Assets/Scripts/Letters/letters.txt";
-    private string _filepath = Application.streamingAssetsPath + "/letters.txt";
+    private string _filepath = "Assets/Scripts/Letters/letters.txt";
+    //private string _filepath = Application.streamingAssetsPath + "/letters.txt";
 
     private List<Letter> _letters;
     private Dictionary<string, NPC> _npcs; 

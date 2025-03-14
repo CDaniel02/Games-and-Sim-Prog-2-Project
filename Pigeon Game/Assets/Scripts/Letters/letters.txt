@@ -1,7 +1,9 @@
 ﻿start
 LetterId: 0
 To: Naked Man
+AlternateTo: Random Woman
 ToResponse: How DARE he say this about me?
+AlternateToResponse: What? I'm not naked...
 From: Peasant
 FromResponse: Bring this to the Naked Man at the lake post-haste and i shall give you another letter once you're done
 Body: You're looking kinda naked bro

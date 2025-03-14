@@ -18,6 +18,8 @@ public class PlayerStateMachine : StateMachine
     public float RotationalFactor = 5f; 
     public float LookRotationDampFactor { get; private set; } = 2;
     public Transform MainCamera { get; private set; }
+    public float CameraSpeed = 2f; 
+    public Transform LetterViewCameraPos; 
     public InputReader InputReader { get; private set; }
     public Animator Animator { get; private set; }
     public CharacterController Controller { get; private set; }

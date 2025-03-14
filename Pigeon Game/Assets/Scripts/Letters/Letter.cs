@@ -11,11 +11,19 @@ public class Letter
 	private string _to; 
 	public string To { get { return _to; } set { _to = value; } }
 
-	// response the person in the "To" field gives after receiving the letter
-	private string _toResponse;
+    // other person the letter can be delivered to
+    private string _altTo;
+    public string AlternateTo { get { return _altTo; } set { _altTo = value; } }
+
+    // response the person in the "To" field gives after receiving the letter
+    private string _toResponse;
 	public string ToResponse { get { return _toResponse; } set { _toResponse = value; } }
 
-	private string _from; 
+    // response the person in the "AlternateTo" field gives after receiving the letter
+    private string _altToResponse;
+    public string AlternateToResponse { get { return _altToResponse; } set { _altToResponse = value; } }
+
+    private string _from; 
 	public string From { get { return _from; } set { _from = value; } }
 
 	// response the person in the "From" field gives after giving the player the letter
@@ -50,8 +58,10 @@ public class Letter
 		From = from;
 		Body = body;
 
+        AlternateTo = "";
 		ToResponse = "";
-		FromResponse = "";
+        AlternateToResponse = "";
+        FromResponse = "";
 		PrereqLetters = new List<int>();
         DeliveredPrereqLetters = new List<int>(); 
 

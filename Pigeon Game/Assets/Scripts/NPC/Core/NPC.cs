@@ -152,11 +152,22 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
 
     public void TakeLetter(PlayerStateMachine stateMachine)
     {
-        if (stateMachine.LetterHolding.To == gameObject.name)
+        if (stateMachine.LetterHolding.To == Name)
         {
             mailbox.AddIncomingMail(stateMachine.LetterHolding);
             _dialogQueue.Enqueue(ThankYouForLetter);
             _dialogQueue.Enqueue(stateMachine.LetterHolding.ToResponse);
+
+            stateMachine.RemoveLetter(stateMachine.LetterHolding);
+
+            Notification notification = new(stateMachine.LetterHolding.LetterId + "", stateMachine.LetterHolding);
+            NotificationCenter.Instance.PostNotification(notification);
+        }
+        else if(stateMachine.LetterHolding.AlternateTo == Name)
+        {
+            mailbox.AddIncomingMail(stateMachine.LetterHolding);
+            _dialogQueue.Enqueue(ThankYouForLetter);
+            _dialogQueue.Enqueue(stateMachine.LetterHolding.AlternateToResponse);
 
             stateMachine.RemoveLetter(stateMachine.LetterHolding);
 

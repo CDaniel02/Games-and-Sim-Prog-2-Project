@@ -112,6 +112,18 @@ public abstract class PlayerBaseState : State
         stateMachine.transform.rotation = Quaternion.Slerp(stateMachine.transform.rotation, Quaternion.LookRotation(faceDirection), stateMachine.LookRotationDampFactor * Time.deltaTime);
     }
 
+    protected void PositionCamera()
+    {
+        if (!stateMachine.CurserLocked)
+        {
+            stateMachine.MainCamera.transform.position = Vector3.Lerp(stateMachine.MainCamera.transform.position, stateMachine.LetterViewCameraPos.position, stateMachine.CameraSpeed * Time.deltaTime);
+
+            Vector3 facingDirection = stateMachine.transform.position - stateMachine.MainCamera.transform.position;
+
+            stateMachine.MainCamera.forward = Vector3.LerpUnclamped(stateMachine.MainCamera.forward, facingDirection, stateMachine.CameraSpeed / 4 * Time.deltaTime); 
+        }
+    }
+
     protected void ApplyGravity()
     {
         stateMachine.Velocity.y += Physics.gravity.y * Time.deltaTime;
@@ -125,7 +137,7 @@ public abstract class PlayerBaseState : State
     protected void UnlockCurser()
     {
         stateMachine.CurserLocked = !stateMachine.CurserLocked;
-        // stateMachine.CinemachineCamera.enabled = stateMachine.CurserLocked; 
+        stateMachine.CinemachineCamera.enabled = stateMachine.CurserLocked;
     }
 
     protected void ClickPerformed()
@@ -329,6 +341,8 @@ public class PlayerGroundedState : PlayerBaseState
         FaceMoveDirection();
         Move();
 
+        PositionCamera(); 
+
         // stateMachine.Animator.SetFloat(MoveSpeedHash, stateMachine.InputReader.MoveComposite.sqrMagnitude > 0f ? 1f : 0f, AnimationDampTime, Time.deltaTime);
     }
 
@@ -361,8 +375,9 @@ public class PlayerAirborneState : PlayerBaseState
         ApplyGravity();
 
         UnityEngine.Vector3 playerMovement = CalculateFlying(); 
-        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z)))); 
+        stateMachine.Animator.SetFloat("AirMovementSpeed", Mathf.Abs(Mathf.Floor(playerMovement.x) + Mathf.Abs(Mathf.Floor(playerMovement.z))));
 
+        PositionCamera();
 
         if (stateMachine.Controller.isGrounded)
         {
