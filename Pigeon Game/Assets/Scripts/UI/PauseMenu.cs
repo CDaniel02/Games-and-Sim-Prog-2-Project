@@ -10,6 +10,8 @@ public class PauseMenu : MonoBehaviour
     public Button ResumeButton;
     public Button SettingsButton;
     public Button ExitButton;
+
+    public Canvas PauseCanvas;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +24,11 @@ public class PauseMenu : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void ResumeGame()
+    {
+        PauseCanvas.enabled = false;
     }
 
     private void ExitGame()
