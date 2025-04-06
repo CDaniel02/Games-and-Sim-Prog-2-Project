@@ -417,7 +417,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70931405, z: -0, w: 0.70489264}
   m_LocalPosition: {x: 52.489227, y: 3.7273998, z: 27.049467}
-  m_LocalScale: {x: 0.39999998, y: 0.4, z: 0.39999998}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2373261530837386073}
@@ -454,12 +454,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5100187902913016618}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7643fb37ca938488863b9e139a66c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 01f325f40b7bf26459887af3c8ea76ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverSpeed: 0.3
-  pursuitSpeed: 0.1
-  retreatSpeed: 0.07
+  hoverSpeed: 0.5
+  pursuitSpeed: 0.3
+  retreatSpeed: 0.1
   radius: 50
   detectedable: 30
   pigeon: {fileID: 0}
