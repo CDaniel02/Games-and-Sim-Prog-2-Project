@@ -126,9 +126,12 @@ public class NPC : MonoBehaviour, ITakesLetters, IClickable
             if(mailbox.GetLetter(out letter))
             {
                 // TODO: potentially get rid of the "i have a letter" bit so that its less repetitive 
-                _dialogQueue.Enqueue(IHaveALetterTo + letter.To + ".");
-                _dialogQueue.Enqueue(letter.FromResponse);
                 pigeon.AddLetter(letter);
+                if(letter.Ignore == false)
+                {
+                    _dialogQueue.Enqueue(IHaveALetterTo + letter.To + ".");
+                    _dialogQueue.Enqueue(letter.FromResponse);
+                }
                 Debug.Log("Letter that goes to " + letter.To + " added to pigeon mailbox");
             }
             else if(!dialogBox.dialogPanel.activeSelf)

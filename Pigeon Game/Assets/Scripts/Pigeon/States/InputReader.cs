@@ -17,7 +17,6 @@ public class InputReader : MonoBehaviour
     public Action OnInteractPerformed;
     public Action OnUnlockCursorPerformed;
     public Action OnDialogPerformed;
-    public Action OnPausePerformed;
 
     private void OnEnable()
     {
@@ -87,16 +86,11 @@ public class InputReader : MonoBehaviour
         OnClickPerformed?.Invoke();
     }
 
-    public void OnPause()
+    public void OnPause(InputValue inputValue)
     {
-        OnPausePerformed?.Invoke();
+        Notification notification = new("Pause", this);
+        NotificationCenter.Instance.PostNotification(notification);
     }
-
-    public void OnExitPause()
-    {
-        OnPausePerformed = Nothing;
-    }
-
 
     private void Nothing()
     {

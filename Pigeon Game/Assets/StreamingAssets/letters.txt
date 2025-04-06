@@ -1,17 +1,27 @@
 ﻿start
 LetterId: 0
-To: Naked Man
+To: Federic
 ToResponse: How DARE he say this about me?
-From: Peasant
-FromResponse: Bring this to the Naked Man at the lake post-haste and i shall give you another letter once you're done
+From: Berolt
+FromResponse: Bring this to the Federic at the lake post-haste and i shall give you another letter once you're done
 Body: You're looking kinda naked bro
 end
 
 start
+LetterId: 07
+To: Federic
+ToResponse: How DARE he say this about me?
+From: Berolt
+FromResponse: you're not supposed to be seeing this
+Body: You're looking kinda naked bro
+Ignore: true
+end
+
+start
 LetterId: 1
-To: Peasant
+To: Berolt
 ToResponse: What an imbicile he is...
-From: Naked Man
+From: Federic
 FromResponse: Bring this to him, he'll rue the day...
 Body: I can be naked as much as I want
 PrereqLetters: 0
@@ -19,9 +29,9 @@ end
 
 start
 LetterId: 2
-To: Naked Man
+To: Federic
 ToResponse: Really, another letter? this is excessive i think
-From: Peasant
+From: Berolt
 FromResponse: Ah i see you have delivered my letter, here is your next 
 Body: You're looking kinda naked bro
 DeliveredPrereqLetters: 0
@@ -29,9 +39,9 @@ end
 
 start
 LetterId: 3
-To: Naked Man
+To: Federic
 ToResponse: Bros kinda obsessed with me 
-From: Peasant
+From: Berolt
 FromResponse: oh and ive got this other letter
 Body: You're STILL looking kinda naked bro, get BURNED crazy style
 end

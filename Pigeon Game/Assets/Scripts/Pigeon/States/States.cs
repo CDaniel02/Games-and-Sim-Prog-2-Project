@@ -186,6 +186,7 @@ public abstract class PlayerBaseState : State
 
     protected GameObject FindObjectWhereMouseIs()
     {
+        /*
         GameObject objectHit = null;
 
         LayerMask layerMask = stateMachine.UICamera.cullingMask;
@@ -207,8 +208,33 @@ public abstract class PlayerBaseState : State
                 Debug.Log("Hit " + objectHit.name + "!");
             }
         }
+        */ 
+
+        GameObject objectHit = FindObjectWhereMouseIs(stateMachine.UICamera);
+
+        if(objectHit == null)
+        {
+            objectHit = FindObjectWhereMouseIs(Camera.main); 
+        }
 
         return objectHit; 
+    }
+
+    protected GameObject FindObjectWhereMouseIs(Camera camera)
+    {
+        GameObject objectHit = null;
+
+        LayerMask layerMask = camera.cullingMask;
+        Vector3 mousePos = stateMachine.InputReader.MousePosition;
+        Ray ray = camera.ScreenPointToRay(mousePos);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask)) // TODO: help performance with removing infinity
+        {
+            objectHit = hit.collider.gameObject;
+            Debug.Log("Hit " + objectHit.name + "!");
+        }
+
+        return objectHit;
     }
 
     protected void Click()
@@ -252,7 +278,7 @@ public abstract class PlayerBaseState : State
     {
         if(stateMachine.LetterHolding != null)
         {
-            GameObject objectHit = FindObjectWhereMouseIs();
+            GameObject objectHit = FindObjectWhereMouseIs(Camera.main);
 
             if(objectHit != null && objectHit.TryGetComponent(out ITakesLetters component)) 
             {

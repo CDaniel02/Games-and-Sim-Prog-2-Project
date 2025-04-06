@@ -21,9 +21,14 @@ public class TextReader : MonoBehaviour
         Read();
 
         // get all NPCs from the NPC gameobject in scene
-        List<NPC> npcList = new(GameObject.Find("NPCs").GetComponentsInChildren<NPC>());
+        List<NPC> npcList = new List<NPC>(); 
+        List<GameObject> NPCHoldersList = new(GameObject.FindGameObjectsWithTag("NPCs"));
+        foreach (GameObject holder in NPCHoldersList)
+        {
+            npcList.AddRange(holder.GetComponentsInChildren<NPC>()); 
+        }
         // add NPCs to dictionary by NPC name
-        foreach(NPC npc in npcList)
+        foreach (NPC npc in npcList)
         {
             _npcs[npc.Name] = npc;
             Debug.Log(npc.Name); 

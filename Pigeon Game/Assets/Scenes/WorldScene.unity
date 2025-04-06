@@ -14956,7 +14956,7 @@ GameObject:
   - component: {fileID: 364500577}
   m_Layer: 0
   m_Name: NPCs
-  m_TagString: Untagged
+  m_TagString: NPCs
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76614,7 +76614,7 @@ GameObject:
   - component: {fileID: 1837703132}
   m_Layer: 0
   m_Name: NPCs
-  m_TagString: Untagged
+  m_TagString: NPCs
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91144,7 +91144,7 @@ Transform:
   m_GameObject: {fileID: 8586191390258780512}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 519.1, y: -2.5, z: -69.3}
+  m_LocalPosition: {x: 519.1, y: 2.82, z: -69.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -105769,7 +105769,6 @@ MonoBehaviour:
   TimeToDragLetter: 0.1
   NPCInDialogWith: {fileID: 0}
   playerInput: {fileID: 0}
-  PausePanel: {fileID: 6933245995713988261}
   CinemachineCamera: {fileID: 1842138057223370038}
 --- !u!4 &2952860578100548132
 Transform:
@@ -106975,6 +106974,7 @@ MonoBehaviour:
   SettingsButton: {fileID: 5038036882411797651}
   ExitButton: {fileID: 2554612093879618420}
   PausePanel: {fileID: 6933245995713988261}
+  paused: 0
 --- !u!4 &3212206859711153042
 Transform:
   m_ObjectHideFlags: 0
@@ -108724,7 +108724,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6916518691755986684}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22013871, y: 0, z: 0, w: 0.9754686}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -121535,7 +121535,7 @@ Transform:
   m_GameObject: {fileID: 6806895156533555274}
   serializedVersion: 2
   m_LocalRotation: {x: 0.20235908, y: 0.000000034417226, z: -0.000000007111771, w: 0.9793114}
-  m_LocalPosition: {x: 519.1, y: 13.099999, z: -99.99999}
+  m_LocalPosition: {x: 519.1, y: 18.419998, z: -99.99999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -128761,7 +128761,7 @@ Transform:
   m_GameObject: {fileID: 7037715854449131555}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 519.1, y: 13.099999, z: -99.99999}
+  m_LocalPosition: {x: 519.1, y: 18.419998, z: -99.99999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

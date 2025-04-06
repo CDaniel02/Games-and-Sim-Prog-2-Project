@@ -43,12 +43,17 @@ public class Letter
         }
     }
 
+    // set to true to not inform the player of the letter
+    private bool _ignore;
+    public bool Ignore { get { return _ignore; } set { _ignore = value; } }
+
     // Designated Contructor 
     public Letter(string to, string from, string body)
 	{
 		To = to;
 		From = from;
 		Body = body;
+        Ignore = false; 
 
 		ToResponse = "";
 		FromResponse = "";

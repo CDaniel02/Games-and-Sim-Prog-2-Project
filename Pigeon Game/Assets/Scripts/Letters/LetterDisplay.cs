@@ -18,11 +18,11 @@ public class LetterDisplay : MonoBehaviour
 	public int DisplayLetterX = -255; 
 	public int DisplayLetterY = 160;
 	public int DisplayLetterZ = -225;
-	public int HoldingLetterZ = 0; 
+	public int HoldingLetterZ = 0;
 
-	// TODO: make this dynamic to screen size
-	// but make all the letters center most of the time
-	public int LetterDistanceApart = 220;
+    // TODO: make this dynamic to screen size
+    // but make all the letters center most of the time
+    public int LetterDistanceApart = 220;
 	public int MaxLettersBeforeOverlap = 6;
 	public int TotalLetterDistance;
 
@@ -123,13 +123,15 @@ public class LetterDisplay : MonoBehaviour
 		{
 			if(_inputReader != null)
 			{
-				// track the letter to the mouse
-				// TODO: offset letter so the mouse is in the middle of the letter 
+                // track the letter to the mouse
+                // TODO: offset letter so the mouse is in the middle of the letter 
 
-				Vector3 mousePos = UICamera.ScreenToWorldPoint(new(_inputReader.MousePosition.x, _inputReader.MousePosition.y, UICamera.scaledPixelHeight));
-				mousePos -= LetterHolding.transform.position; 
+                Vector3 mousePos = UICamera.ScreenToWorldPoint(new(_inputReader.MousePosition.x, _inputReader.MousePosition.y, UICamera.scaledPixelHeight));
+                mousePos -= LetterHolding.transform.position; 
+				mousePos.x -= LetterHolding.gameObject.transform.localScale.x;
+                mousePos.y += LetterHolding.gameObject.transform.localScale.y;
 				mousePos.z = HoldingLetterZ;
-				LetterHolding.transform.localPosition = Vector3.Lerp(LetterHolding.transform.localPosition, mousePos, LetterSpeed * Time.deltaTime);
+                LetterHolding.transform.localPosition = Vector3.Lerp(LetterHolding.transform.localPosition, mousePos, LetterSpeed * Time.deltaTime);
             }
 			else
 			{

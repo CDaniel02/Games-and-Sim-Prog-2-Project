@@ -33,26 +33,6 @@ public class PlayerStateMachine : StateMachine
 
     private Letter _letterHolding;
 
-    public GameObject PausePanel;
-    private bool paused = false;
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) && paused == false)
-        {
-            PausePanel.SetActive(true);
-            paused = true;
-            Time.timeScale = 0f;
-        }
-        else if(Input.GetKeyDown(KeyCode.Escape) && paused == true)
-        {
-            PausePanel.SetActive(false);
-            paused = false;
-            Time.timeScale = 1f;
-        }
-    }
-
-
     public Letter LetterHolding
     {
         get
@@ -126,34 +106,6 @@ public class PlayerStateMachine : StateMachine
         }
 
         return RemoveLetter(letter); 
-
-        /*
-
-        if(_letters.Remove(letter))
-        {
-            result = true;
-
-            Notification notification = new("LetterRemoved", letter);
-            NotificationCenter.Instance.PostNotification(notification);
-        }
-
-        */
-
-        /*
-        if(_letters.ContainsKey(npc.Name))
-        {
-            letter = _letters[npc.Name];
-            _letters.Remove(npc.Name); 
-            result = true;
-
-            
-        }
-        else
-        {
-            letter = new Letter(); 
-        }
-        */ 
-
     }
 
     public bool RemoveLetter(Letter letter)
