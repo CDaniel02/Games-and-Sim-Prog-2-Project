@@ -17,6 +17,7 @@ public class InputReader : MonoBehaviour
     public Action OnInteractPerformed;
     public Action OnUnlockCursorPerformed;
     public Action OnDialogPerformed;
+    public Action OnPausePerformed;
 
     private void OnEnable()
     {
@@ -85,6 +86,17 @@ public class InputReader : MonoBehaviour
         MouseDown = inputValue.isPressed; 
         OnClickPerformed?.Invoke();
     }
+
+    public void OnPause()
+    {
+        OnPausePerformed?.Invoke();
+    }
+
+    public void OnExitPause()
+    {
+        OnPausePerformed = Nothing;
+    }
+
 
     private void Nothing()
     {

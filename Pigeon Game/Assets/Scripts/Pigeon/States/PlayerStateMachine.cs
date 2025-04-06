@@ -32,6 +32,27 @@ public class PlayerStateMachine : StateMachine
     private List<Letter> _letters;
 
     private Letter _letterHolding;
+
+    public GameObject PausePanel;
+    private bool paused = false;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && paused == false)
+        {
+            PausePanel.SetActive(true);
+            paused = true;
+            Time.timeScale = 0f;
+        }
+        else if(Input.GetKeyDown(KeyCode.Escape) && paused == true)
+        {
+            PausePanel.SetActive(false);
+            paused = false;
+            Time.timeScale = 1f;
+        }
+    }
+
+
     public Letter LetterHolding
     {
         get

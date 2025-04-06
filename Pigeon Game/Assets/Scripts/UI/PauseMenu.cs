@@ -11,10 +11,11 @@ public class PauseMenu : MonoBehaviour
     public Button SettingsButton;
     public Button ExitButton;
 
-    public Canvas PauseCanvas;
+    public GameObject PausePanel;
     // Start is called before the first frame update
     void Start()
     {
+        PausePanel.SetActive(false);
         ResumeButton.onClick.AddListener(ResumeGame);
         SettingsButton.onClick.AddListener(OpenSettings);
         ExitButton.onClick.AddListener(ExitGame);
@@ -28,7 +29,11 @@ public class PauseMenu : MonoBehaviour
 
     public void ResumeGame()
     {
-        PauseCanvas.enabled = false;
+        if(PausePanel != null)
+        {
+            PausePanel.SetActive(false);
+        }
+        Time.timeScale = 1f;
     }
 
     public void OpenSettings()
