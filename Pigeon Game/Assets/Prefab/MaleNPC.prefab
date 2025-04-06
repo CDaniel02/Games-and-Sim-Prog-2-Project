@@ -3311,10 +3311,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 7677769501214319312}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 122136fcfdd17da4681e11cb1bb6eb3e, type: 3}
+  m_Script: {fileID: 11500000, guid: a99fa2a098d98f846a6bfb89e6b9ce9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: The King
+  Name: 
+  animator: {fileID: 0}
+  npcSpeed: 0
+  npcRotationSpeed: 0
+  targetPoint: 0
+  isLoop: 0
+  patrolPoints: []
+  ThankYouForLetter: Thank you for the letter!
+  IHaveALetterTo: 'I have a letter to give you that goes to '
+  IDontHaveAnyLetters: I dont have any letters!
 --- !u!1 &7724118817009406706
 GameObject:
   m_ObjectHideFlags: 0

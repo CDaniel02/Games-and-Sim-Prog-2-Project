@@ -15,7 +15,7 @@ public class PauseMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ResumeButton.onClick.AddListener(ResumeGame());
+        ResumeButton.onClick.AddListener(ResumeGame);
         SettingsButton.onClick.AddListener(OpenSettings);
         ExitButton.onClick.AddListener(ExitGame);
     }
@@ -29,6 +29,11 @@ public class PauseMenu : MonoBehaviour
     public void ResumeGame()
     {
         PauseCanvas.enabled = false;
+    }
+
+    public void OpenSettings()
+    {
+
     }
 
     private void ExitGame()
