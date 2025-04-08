@@ -11,15 +11,26 @@ public class PauseMenu : MonoBehaviour
     public Button ResumeButton;
     public Button SettingsButton;
     public Button ExitButton;
+
+    public GameObject PausePanel;
+
+    public bool paused = false; 
     
     void Start()
     {
+        PausePanel.SetActive(false);
         ResumeButton.onClick.AddListener(Pause);
         SettingsButton.onClick.AddListener(OpenSettings);
         ExitButton.onClick.AddListener(ExitGame);
+
+        NotificationCenter.Instance.AddObserver("Pause", Pause); 
     }
 
-    /*
+    void Update()
+    {
+
+    }
+
     public void ResumeGame()
     {
         if(PausePanel != null)
@@ -28,12 +39,17 @@ public class PauseMenu : MonoBehaviour
         }
         Time.timeScale = 1f;
     }
-    */
+
+    public void Pause(Notification notification)
+    {
+        Pause(); 
+    }
 
     public void Pause()
     {
-        Notification notification = new("Pause", this);
-        NotificationCenter.Instance.PostNotification(notification);
+        paused = !paused;
+        Time.timeScale = paused ? 0f : 1f;
+        PausePanel.SetActive(paused);
     }
 
     public void OpenSettings()
@@ -43,7 +59,7 @@ public class PauseMenu : MonoBehaviour
 
     private void ExitGame()
     {
-        Notification notification = new("ExitGame", this);
-        NotificationCenter.Instance.PostNotification(notification);
+        UnityEditor.EditorApplication.isPlaying = false;
+        Application.Quit();
     }
 }
