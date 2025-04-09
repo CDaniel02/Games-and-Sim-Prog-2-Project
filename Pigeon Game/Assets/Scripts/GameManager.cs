@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
     public void ExitGame(Notification notification)
     {
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false;
         Application.Quit();
     }
 }
