@@ -1,0 +1,268 @@
+﻿start
+LetterId: 001
+To: Federic
+ToResponse: *sigh* This, again? Must he always be so persistent?
+From: Barolt
+FromResponse: Please, bring this letter to the naked man by the lake, post-haste.
+Body: Good Sir, I write this letter to request from you something I have requested a multitude of times before, and yet you apparently remain oblivious to. Perhaps, seeing it in writing will finally sway your mind. Please, clothe yourself! Your lack of modesty is a curse upon the eyes.
+end
+
+start
+LetterId: 002
+To: Barolt
+ToResponse: That imbecile!
+From: Federic
+FromResponse: Here is my response to Barolt’s letter, if you would be so kind as to fly it to him.
+Body: Does my bareness truly offend you so? We each possess a body and this is mine; there is nothing I could hide that you do not see daily in the comfort and privacy of your own home. And you rarely even venture to the lake, the sole place I express myself so freely! Thus, we needn’t bicker about such triviality.
+PrereqLetters: 001
+end
+
+start
+LetterId: 003
+To: Federic
+ToResponse: Why, if he would invoke the consul’s audience, I shall beat him to the chase!
+From: Barolt
+FromResponse: Take this letter to that naked fool at once.
+Body: I am not merely concerned with myself. Many–nay, all others!–in our village value modesty. I would hate to have to tell Consul Bartholomew of this matter.
+PrereqLetters: 002
+end
+
+start
+LetterId: 004
+To: Bartholomew
+ToResponse: My, my. This Federic fellow sure is enthusiastic about his nudity!
+From: Federic
+FromResponse: Please, take this letter to Talon’s chief consul.
+Body: Hello sir, my name is Federic. Recently, my “frequent indecency” has been scrutinized by one Barolt, a local merchant. As you may or may not be aware, I spend much of my time by the lake just west of town, in various states of undress. I strongly feel there is nothing wrong with this, especially when the heat of summer beats down so heavily, and the cool lakeside breeze feels so refreshing. I should think the mere sight of flesh wouldn’t wound anyone so greatly, much less a man as hard-headed as Barolt, though he has made his disagreement plain. I have simply had it with the constant heckling and harassment from him! Though, in the name of civility, I must respect that my nudity is not a right, and perhaps there is a time and a place for it. Thus, I come to you with a request. Why not designate the lake as that place? There and only there, townsfolk like me who revel in the shedding of our regalia can do so, unobstructed! I merely ask you to at least consider it; I believe it would benefit us all greatly.
+PrereqLetters: 003
+end
+
+start
+LetterId: 005
+To: Federic
+ToResponse: A promising response…but it appears I must fight to keep my clothes off!
+From: Bartholomew
+FromResponse: I have crafted a response. Please, take this to him.
+Body: I have considered your request, and have chosen to abstain from making an official ruling until such time as I have gathered more information. You and Barolt both insist your point of view is shared by all who live here. Thus, I ask of you this–go to the people and, if they should see eye-to-eye with you, gather their support! If support is strong, the lake is yours to divest yourself in. I wish you luck.
+PrereqLetters: 004
+end
+
+start
+LetterId: 006
+To: Adelaide
+ToResponse: Oh, a letter? Let me see.
+From: Federic
+FromResponse: Homer! I would appreciate your help in gathering townsfolk. Please, send these letters out.
+Body: Hello there! Do you often find clothing uncomfortable? Would you like a peaceful, communal, judgement-free area where you can discard your modesty and revel in the joys of unpossessing your garments–the lake west of town, perhaps? If so, please give Homer a signed response letter expressing your support!
+PrereqLetters: 005
+end
+
+start
+LetterId: 007
+To: Elizabeth
+ToResponse: Oh, a letter? Let me see.
+From: Federic
+FromResponse: Homer! I would appreciate your help in gathering townsfolk. Please, send these letters out.
+Body: Hello there! Do you often find clothing uncomfortable? Would you like a peaceful, communal, judgement-free area where you can discard your modesty and revel in the joys of unpossessing your garments–the lake west of town, perhaps? If so, please give Homer a signed response letter expressing your support!
+PrereqLetters: 005
+Ignore: true
+end
+
+start
+LetterId: 008
+To: Tobias
+ToResponse: Oh, a letter? Let me see.
+From: Federic
+FromResponse: Homer! I would appreciate your help in gathering townsfolk. Please, send these letters out.
+Body: Hello there! Do you often find clothing uncomfortable? Would you like a peaceful, communal, judgement-free area where you can discard your modesty and revel in the joys of unpossessing your garments–the lake west of town, perhaps? If so, please give Homer a signed response letter expressing your support!
+PrereqLetters: 005
+Ignore: true
+end
+
+start
+LetterId: 009
+To: Federic
+ToResponse: More support for my cause! How fantastic.
+From: Adelaide
+FromResponse: Here is my response.
+Body: Hello, Federic. Though I have little desire to visit such a place myself, I understand the value it would have to many. Thus, I will give you my support.
+PrereqLetters: 006
+end
+
+start
+LetterId: 010
+To: Federic
+ToResponse: More support for my cause! How fantastic.
+From: Elizabeth
+FromResponse: Here, take this back to the naked man!
+Body: I simply adore your idea, Federic! You have my support. Best of luck, my friend!
+PrereqLetters: 007
+end
+
+start
+LetterId: 011
+To: Federic
+ToResponse: More support for my cause! How fantastic.
+From: Tobias
+FromResponse: I’ve written my thoughts on the matter.
+Body: Hello, Federic. I must admit, your proposal intrigues me. I will give you my support, and should your aims come to fruition, I shall visit the lake sometime soon.
+PrereqLetters: 008
+end
+
+start
+LetterId: 012
+To: Bartholomew
+ToResponse: My, what staggering support!
+From: Federic
+FromResponse: Here, Homer. This bundle includes a new letter for Consul Bartholomew, along with the supporting letters from the townsfolk.
+Body: Hello again, Consul. Along with this letter, I have included signed letters of support from many of Talon’s residents. I truly hope this suffices. In any case, thank you kindly for your consideration.
+PrereqLetters: 009, 010, 011
+end
+
+start
+LetterId: 013
+To: Federic
+ToResponse: Oh, how wonderful! I shall be bare here forevermore. Thank you, Homer.
+From: Bartholomew
+FromResponse: I have made my decision. Please, take this back to Federic.
+Body: My ruling is official: I hereby declare the lake to be a nudist haven! Congratulations. As soon as I am afforded the time, I will pay the lake a visit.
+PrereqLetters: 012
+end
+
+start
+LetterId: 014
+To: Tobias
+ToResponse: How interesting…
+From: Edelina
+FromResponse: Could you take this letter to the beverage merchant in Talon, please?
+Body: I would like to inquire about the possibility of a business partnership. Here in Armor, I’ve recently started selling beverages of a rather peculiar variety. They are sweet and bubbly and have recently become a favorite here in town. I’d like to share this delectable treat with as many as I can–and expand profits, if I may be frank–and I heard that you are the proud owner of the biggest beverage shop in Talon. Perhaps you would be interested in adding my drinks to your catalog?
+end
+
+start
+LetterId: 015
+To: Edelina
+ToResponse: Why, of course! How foolish of me not to send a sample in the first place.
+From: Tobias
+FromResponse: Here is my response to her proposition, if you wouldn’t mind taking this back to her, Homer.
+Body: This sounds like a promising business venture indeed. Though I have interest, I would test a sample of your creation before giving you my word. I believe Homer would be up to the task of carrying a small vial or two.
+PrereqLetters: 014
+end
+
+start
+LetterId: 016
+To: Tobias
+ToResponse: Oh, wow! What a flavor.
+From: Edelina
+FromResponse: Here is my response and some samples. They should be light enough for you to carry comfortably.
+Body: I have included two samples with this letter. The first is my original recipe, which I like to call “Peppy” as inspired by the hyperactivity it often inspires in my village’s children when they drink it. The other is a flavor I created after sharing Peppy with the village chirurgeon–a rather abrasive old man–who told me it required more of a kick. Thus, he inspired me to name it “Dr. Salt.”
+PrereqLetters: 015
+end
+
+start
+LetterId: 017
+To: Edelina
+ToResponse: Oh, wonderful!
+From: Tobias
+FromResponse: I will accept her offer! Here, take this to her.
+Body: Pardon me–the children drink this? Here I was, thinking this creation of yours would leave me inebriated, hah! I find it quite strange, though promising as well. I will accept your business venture, and might I suggest a citrus-inspired flavor? I believe it would go quite well with the bubbliness.
+PrereqLetters: 016
+end
+
+start
+LetterId: 018
+To: Tobias
+ToResponse: I-incredible! I simply adore these flavors!
+From: Edelina
+FromResponse: I will send him these samples as well, for him to try while I prepare the first shipment.
+Body: Why, how humorous! I finished crafting two new recipes just yesterday. The first is flavored with orange, and the other with lime and lemon. I have included these in vials as well; you are the first to try them, so please let me know what you think. They also lack names, and I would welcome any suggestions you may possess. As for payment, I will ask for a mere fifty buckles per shipment, which will include four barrels.
+PrereqLetters: 017
+end
+
+start
+LetterId: 019
+To: Edelina
+ToResponse: He appears to have enjoyed these flavors even more than the first two!
+From: Tobias
+FromResponse: Here you go, Homer. I have written my response and included my payment.
+Body: Oh, the orange flavor is fantastic! It’s so bright, it’s as though I’ve been kissed by the sun. And the lemon and lime one, so spritely! Why, I could drink up seven of these vials right here and now, if my self-restraint was wanting. As for names…well, I’ll let you know if anything comes to mind.
+PrereqLetters: 018
+end
+
+start
+LetterId: 020
+To: Tobias
+ToResponse: Excellent! Thank you for helping arrange our partnership, Homer.
+From: Edelina
+FromResponse: Take this back to Tobias. Thank you, Homer!
+Body: Your enjoyment gladdens me! And thank you kindly for the payment. I have prepared the first shipment, including all four flavor varieties, which my courier Fawkes will bring down in a few days time.
+PrereqLetters: 019
+end
+
+start
+LetterId: 021
+To: Isabelle
+ToResponse: Oh! This is from…that frog by the pond? 
+From: Frog
+FromResponse: Ribbit ribbit! Ribbit, ribbit.
+Body: Ribbit, Ribbit ribbit. Ribbit ribbit ribbit? Ribbit ribbit ribbit ribbit. Ribbit, ribbit ribbit. 
+end
+
+start
+LetterId: 022
+To: Reynar
+ToResponse: Oh, she’s in need of a frog whisperer? That’s one of my specialties.
+From: Isabelle
+FromResponse: Hmm…could you please take this letter to that man Reynar, who lives just west of town? I heard he can decipher animal-speak; perhaps he can help translate.
+Body: Mr. Reynar, I hope this letter finds you well. I recently received a letter from a frog, and I’m having some trouble reading it. Could you help put it into plain English? I’ve attached it to this letter.
+PrereqLetters: 021
+end
+
+start
+LetterId: 023
+To: Isabelle
+ToResponse: Oh! How unexpectedly sweet.
+From: Reynar
+FromResponse: There we go! I’ve translated it for her, and included a translation guide for frogs, should she ever require it. Ya might benefit from takin’ a look, yerself, Homer!
+Body: Ribbit, Ribbit ribbit. Ribbit ribbit ribbit? Ribbit ribbit ribbit ribbit. Ribbit, ribbit ribbit. (Hello. I am Frog. Do you want to hear my song? I would like to share my song with you. Come to the pond, please.)
+PrereqLetters: 022
+end
+
+start
+LetterId: 024
+To: Frog
+ToResponse: Ribbit ribbit! Ribbit, ribbit ribbit, ribbit ribbit. (Wonderful news! You may attend as well, Bird, if you would like.)
+From: Isabelle
+FromResponse: I have written a response for the frog, with the correct translation…I think. Here you go, Homer.
+Body: Ribbit ribbit ribbit ribbit. Ribbit ribbit ribbit. (I would love to hear your song. I will be there this evening.)
+PrereqLetters: 023
+end
+
+start
+LetterId: 025
+To: Isabelle
+ToResponse: Oh, why yes! I had no idea what it meant, but it was beautiful.
+From: Frog
+FromResponse: Ribbit ribbit ribbit. (Here, take this to Human.)
+Body: Ribbit ribbit ribbit ribbit, ribbit. (Thank you for listening to my song, Human. I hope you enjoyed it.)
+PrereqLetters: 024
+end
+
+start
+LetterId: 026
+To: Frog
+ToResponse: Ribbit, ribbit ribbit, ribbit. (Oh, thank you for the letter, Bird.)
+From: Isabelle
+FromResponse: Here, I’ve written a response for our small amphibious friend.
+Body: Ribbit ribbit; ribbit ribbit ribbit. Ribbit ribbit ribbit ribbit! Ribbit, ribbit ribbit? (Your song was wonderful; I enjoyed listening very much. I think you should share your song with everyone here in Armor! By the way, do you have a name?)
+PrereqLetters: 025
+end
+
+start
+LetterId: 027
+To: Isabelle
+ToResponse: Oh! Just Frog…well, alright. I'll have to help spread the word!
+From: Frog
+FromResponse: Ribbit ribbit. (Here is my response.)
+Body: Ribbit, ribbit. Ribbit! Ribbit ribbit ribbit ribbit. Ribbit ribbit? (Yes, I have a name. I am Frog. I would like to share my song with others. How do I gather them all?)
+PrereqLetters: 026
+end
